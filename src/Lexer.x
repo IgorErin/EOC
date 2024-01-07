@@ -17,10 +17,16 @@ tokens :-
   "-"                   { \_ -> TSub }
   "+"                   { \_ -> TAdd }
 
-  "read"                { \_ -> TRead } -- TODO
+  "read"                { \_ -> TRead }
 
   "("                   { \_ -> TLParent }
   ")"                   { \_ -> TRParent}
+
+  "let"                 { \_ -> TLet }
+  "in"                  { \_ -> TIn }
+  "="                   { \_ -> TBind }
+
+  @ident                { \ x -> TIdent x }
 
 {
 -- Each action has type :: String -> Token
@@ -32,7 +38,13 @@ data Token
   | TSub 
   | TAdd 
   | TRead 
+
   | TLParent 
   | TRParent
+
+  | TLet 
+  | TIn 
+  | TBind
+  | TIdent String
   deriving (Eq, Show)
 }
