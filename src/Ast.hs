@@ -1,5 +1,5 @@
 module Ast
-    (Program(..), Expr(..),
+    (Program(..), Expr(..), Ident,
     program,
     int, read, sub, read_, add,
     ident, let_)
@@ -17,15 +17,15 @@ data Expr =
     | ERead
     | ESub Expr
     | EAdd Expr Expr
-    | ALet Ident Expr Expr
-    | AIdent Ident
+    | ELet Ident Expr Expr
+    | EIdent Ident
     deriving (Show, Eq)
 
 ident :: Ident -> Expr
-ident = AIdent
+ident = EIdent
 
 let_:: Ident -> Expr -> Expr -> Expr
-let_ = ALet
+let_ = ELet
 
 int :: Int -> Expr
 int = EInt

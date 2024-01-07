@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Ast
+      Inter
       Lang
       Lexer
       Lib
@@ -66,6 +67,7 @@ test-suite EOC-test
   type: exitcode-stdio-1.0
   main-is: Main.hs
   other-modules:
+      Tests.Inter
       Tests.Lexer
       Tests.Pareval
       Tests.Parser

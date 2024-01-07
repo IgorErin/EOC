@@ -18,20 +18,23 @@ fetch (EAdd leftExpr rightExpr) =
         (rightExpr', rightNum) = fetch rightExpr
         resultExpr = both EAdd leftExpr' rightExpr'
     in (resultExpr, leftNum + rightNum)
-fetch x@(AIdent _) = (Just x, 0)
-fetch (ALet name value body) =
+fetch x@(EIdent _) = (Just x, 0)
+fetch (ELet name value body) =
     let (body', number) = fetch body
-        resultExpr = ALet name value <$> body'
+        value' = runExpr value
+        resultExpr = ELet name value' <$> body'
     in (resultExpr, number)
 
-run :: A.Program -> A.Program
-run (Program expr) =
+runExpr :: A.Expr -> A.Expr
+runExpr expr =
     let (expr', num) = fetch expr
-        result = case expr' of
-            Just e ->
-                if num /= 0
-                then EAdd e $ EInt num
-                else e
-            Nothing -> EInt num
-    in Program result
+    in case expr' of
+        Just e ->
+            if num /= 0
+            then EAdd e $ EInt num
+            else e
+        Nothing -> EInt num
+
+run :: A.Program -> A.Program
+run (Program expr) = Program $ runExpr expr
 
