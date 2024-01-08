@@ -1,6 +1,6 @@
 module Uniquify (run) where
 
-import Ast as A
+import R1 as R
 
 import Data.Map as Map
 import Data.Function
@@ -9,7 +9,7 @@ import Data.Maybe
 run :: Program -> Program
 run (Program expr) = Program $ fst $ runExpr [] Map.empty expr
 
-newName :: [A.Ident] -> Ident -> Ident
+newName :: [R.Ident] -> Ident -> Ident
 newName e current =
     let newNameWith :: Int -> Ident -> Ident
         newNameWith count name =
@@ -19,7 +19,7 @@ newName e current =
             else numbered
     in newNameWith 0 current
 
-runExpr :: [A.Ident] -> Map Ident Ident -> Expr -> (Expr, [A.Ident])
+runExpr :: [R.Ident] -> Map Ident Ident -> Expr -> (Expr, [R.Ident])
 runExpr e _ n@(EInt _) = (n, e)
 runExpr e _ ERead = (ERead, e)
 runExpr e m (ESub expr) =

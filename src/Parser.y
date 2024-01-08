@@ -2,7 +2,7 @@
 module Parser where
 
 import qualified Lexer as L
-import qualified Ast as A
+import qualified R1 as R
 }
 
 %name run
@@ -26,17 +26,17 @@ import qualified Ast as A
 
 %%
 
-Program :: { A.Program }
-Program : Expr              { A.program $1 }
+Program :: { R.Program }
+Program : Expr              { R.program $1 }
 
-Expr :: { A.Expr }
+Expr :: { R.Expr }
 Expr
-    : int                           { A.int $1 }
-    | '(' read ')'                  { A.read_ }
-    | '(' '-' Expr ')'              { A.sub $3 }
-    | '(' '+' Expr Expr ')'         { A.add $3 $4 }
-    | let ident '=' Expr in Expr    { A.let_ $2 $4 $6 }
-    | ident                         { A.ident $1 }
+    : int                           { R.int $1 }
+    | '(' read ')'                  { R.read_ }
+    | '(' '-' Expr ')'              { R.sub $3 }
+    | '(' '+' Expr Expr ')'         { R.add $3 $4 }
+    | let ident '=' Expr in Expr    { R.let_ $2 $4 $6 }
+    | ident                         { R.ident $1 }
 
 {
 parseError :: [L.Token] -> a

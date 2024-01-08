@@ -1,6 +1,6 @@
 module Pareval (run) where
 
-import Ast as A ( Program(..), Expr(..) )
+import R1 as R ( Program(..), Expr(..) )
 
 both :: (a -> a -> a) -> Maybe a -> Maybe a -> Maybe a
 both f (Just left) (Just right) = Just $ f left right
@@ -25,7 +25,7 @@ fetch (ELet name value body) =
         resultExpr = ELet name value' <$> body'
     in (resultExpr, number)
 
-runExpr :: A.Expr -> A.Expr
+runExpr :: R.Expr -> R.Expr
 runExpr expr =
     let (expr', num) = fetch expr
     in case expr' of
@@ -35,6 +35,6 @@ runExpr expr =
             else e
         Nothing -> EInt num
 
-run :: A.Program -> A.Program
+run :: R.Program -> R.Program
 run (Program expr) = Program $ runExpr expr
 
