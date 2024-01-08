@@ -26,12 +26,15 @@ source-repository head
 library
   exposed-modules:
       Ast
+      C0
       Inter
       Lang
       Lexer
       Lib
       Pareval
       Parser
+      Uniquify
+      X86
   other-modules:
       Paths_EOC
   autogen-modules:
@@ -71,6 +74,7 @@ test-suite EOC-test
       Tests.Lexer
       Tests.Pareval
       Tests.Parser
+      Tests.Uniquify
       Paths_EOC
   autogen-modules:
       Paths_EOC
