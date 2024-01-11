@@ -6,8 +6,13 @@ import Data.Map as Map
 import Data.Function
 import Data.Maybe
 
+import Control.Monad.State
+
 run :: Program -> Program
-run (Program expr) = Program $ fst $ runExpr [] Map.empty expr
+run (Program expr) =
+    let ninit = Names { _names = [], _names_map = Map.empty }
+        result = evalState (runExpr' expr) ninit
+    in Program result
 
 newName :: [R.Ident] -> Ident -> Ident
 newName e current =
@@ -18,25 +23,38 @@ newName e current =
             then newNameWith (count + 1) name
             else numbered
     in newNameWith 0 current
+    
+data Names = Names { _names:: [R.Ident], _names_map:: Map Ident Ident }
 
-runExpr :: [R.Ident] -> Map Ident Ident -> Expr -> (Expr, [R.Ident])
-runExpr e _ n@(EInt _) = (n, e)
-runExpr e _ ERead = (ERead, e)
-runExpr e m (ESub expr) =
-    let (expr', e') = runExpr e m expr
-    in (ESub expr', e')
-runExpr e m (EAdd left right) =
-    let (left', e') = runExpr e m left
-        (right', e'') = runExpr e' m right
-    in (EAdd left' right', e'')
-runExpr e m (ELet name expr body) =
-    let name' = newName e name
-        m' = Map.insert name name' m
-        e' = name' : e
+runExpr' :: Expr -> State Names Expr
+runExpr' n@(EInt _) = do return n
+runExpr' ERead = do return ERead
+runExpr' (ESub expr) = do
+    expr' <- runExpr' expr
 
-        (expr', e'') = runExpr e' m expr
-        (body', e''') = runExpr e'' m' body
-    in (ELet name' expr' body', e''')
-runExpr e m (EIdent name) =
-    let name' = Map.lookup name m & fromMaybe (error $ "Name not found: " ++ name)
-    in (EIdent name' , e)
+    return $ ESub expr'
+runExpr' (EAdd left right) = do
+    left' <- runExpr' left
+    right' <- runExpr' right
+
+    return $ EAdd left' right'
+runExpr' (ELet name expr body) = do
+    nmap <- gets _names_map
+    old <- gets _names
+
+    let name' = newName old name
+    let map' = Map.insert name name' nmap
+    let old' = name' : old
+
+    modify (\ x ->  x { _names = old' }) -- lenses
+    expr' <- runExpr' expr
+
+    modify (\ x -> x {_names_map = map'})
+    body' <- runExpr' body
+
+    return (ELet name' expr' body')
+runExpr' (EIdent name) = do
+    nmap <- gets _names_map
+    let name' = Map.lookup name nmap & fromMaybe (error $ "Not found" ++ name) -- Transformer with Error
+
+    return $ EIdent name'
