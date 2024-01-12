@@ -1,18 +1,14 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Uniquify (run) where
 
-import R1 as R
+import R1 as R ( Expr(..), Ident, Program(..) )
 
 import Data.Map as Map
-import Data.Function
-import Data.Maybe
 
 import Control.Monad.State
-
-run :: Program -> Program
-run (Program expr) =
-    let ninit = Names { _names = [], _names_map = Map.empty }
-        result = evalState (runExpr' expr) ninit
-    in Program result
+import Control.Monad.Except
+import Control.Lens
 
 newName :: [R.Ident] -> Ident -> Ident
 newName e current =
@@ -23,10 +19,14 @@ newName e current =
             then newNameWith (count + 1) name
             else numbered
     in newNameWith 0 current
-    
-data Names = Names { _names:: [R.Ident], _names_map:: Map Ident Ident }
 
-runExpr' :: Expr -> State Names Expr
+data Names = Names { _old_names:: [R.Ident], _names_map:: Map Ident Ident }
+
+$(makeLenses ''Names)
+
+initNames = Names { _old_names = [], _names_map = Map.empty }
+
+runExpr' :: Expr -> StateT Names (Except String) Expr
 runExpr' n@(EInt _) = do return n
 runExpr' ERead = do return ERead
 runExpr' (ESub expr) = do
@@ -34,27 +34,38 @@ runExpr' (ESub expr) = do
 
     return $ ESub expr'
 runExpr' (EAdd left right) = do
-    left' <- runExpr' left
-    right' <- runExpr' right
+    left_ <- runExpr' left
+    right_ <- runExpr' right
 
-    return $ EAdd left' right'
+    return $ EAdd left_ right_
 runExpr' (ELet name expr body) = do
     nmap <- gets _names_map
-    old <- gets _names
+    old <- gets _old_names
 
     let name' = newName old name
     let map' = Map.insert name name' nmap
-    let old' = name' : old
+    let old' = name': name : old
 
-    modify (\ x ->  x { _names = old' }) -- lenses
+    modify $ set old_names old'
     expr' <- runExpr' expr
 
-    modify (\ x -> x {_names_map = map'})
+    modify $ set names_map map'
     body' <- runExpr' body
 
     return (ELet name' expr' body')
 runExpr' (EIdent name) = do
     nmap <- gets _names_map
-    let name' = Map.lookup name nmap & fromMaybe (error $ "Not found" ++ name) -- Transformer with Error
+
+    name' <- case Map.lookup name nmap of
+            Just x ->  return x
+            Nothing -> throwError $ "name not found" ++ name
 
     return $ EIdent name'
+
+run :: Program -> Program
+run (Program expr) =
+    let mb =  evalStateT (runExpr' expr) initNames
+        eitherResult =runIdentity $ runExceptT mb
+    in case eitherResult of
+        Left m -> error m
+        Right v -> Program v
