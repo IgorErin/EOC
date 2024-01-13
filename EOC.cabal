@@ -37,6 +37,7 @@ library
       MemPatch
       Pareval
       Parser
+      Print
       R1
       Uniquify
       X86
@@ -87,6 +88,7 @@ test-suite EOC-test
       Tests.MemPatch
       Tests.Pareval
       Tests.Parser
+      Tests.Print
       Tests.Uniquify
       Paths_EOC
   autogen-modules:

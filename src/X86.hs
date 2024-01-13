@@ -29,7 +29,7 @@ data Arg =
 
 data Instr =
     Addq Arg Arg
-    | Subq Arg
+    | Subq Arg Arg
     | Negq Arg
     | Movq Arg Arg
     | Callq Label

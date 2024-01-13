@@ -12,12 +12,15 @@ $(makeLenses ''Frame)
 empty :: Frame
 empty = Frame { _fsize = 0 }
 
+intSize :: Int
+intSize = 8
+
 nextOffset :: State Frame Int
 nextOffset = do
     current <- gets $ view fsize
     modify $ over fsize succ
 
-    return $ current * 4
+    return $ current * intSize
 
 getSize :: Frame -> Int
-getSize = (* 4) . view fsize
+getSize = (* intSize) . view fsize

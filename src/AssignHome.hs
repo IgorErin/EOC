@@ -38,9 +38,10 @@ runInstr (XV.Addq left right) = do
     r <- runArg right
 
     return $ X.Addq l r
-runInstr (XV.Subq arg) = do
-    arg' <- runArg arg
-    return $ X.Subq arg'
+runInstr (XV.Subq left right) = do
+    l' <- runArg left
+    r' <- runArg right
+    return $ X.Subq l' r'
 runInstr (XV.Negq arg) = do
     arg' <- runArg arg
     return $ X.Negq arg'

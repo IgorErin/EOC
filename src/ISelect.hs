@@ -19,9 +19,12 @@ runStmt (C.SReturn arg) =
 runAssign :: C.Ident -> C.Expr -> [X.Instr]
 runAssign name (C.EArg arg) =
     [ X.Movq (runArg arg) (X.AVar name)  ]
-runAssign name (C.ESub arg) =
-    [ X.Movq (runArg arg) (X.AVar name),
-      X.Subq (X.AVar name) ]
+runAssign name (C.ESub (C.AInt n)) =
+    [ X.Movq (X.AInt (-n)) (X.AVar name) ]
+runAssign name (C.ESub (C.AVar n)) =
+    let dest = X.AVar name in
+    [ X.Movq (X.AInt 0) dest,
+      X.Subq (X.AVar n) dest ]
 runAssign name (C.EAdd left right) = runAdd name left right
 runAssign name C.ERead =
     [ X.Callq "read_int",

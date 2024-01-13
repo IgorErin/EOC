@@ -56,7 +56,7 @@ fetchExpr (R.ELet name expr body) = do
     addAssign name expr'
 
     fetchExpr body
-fetchExpr (R.EIdent name)         = return $ C.EArg $ C.AVar name
+fetchExpr (R.EIdent name)        = return $ C.EArg $ C.AVar name
 
 fetchArg :: R.Expr -> State Ctx C.Arg
 fetchArg (R.EInt n)              = return $ C.AInt n

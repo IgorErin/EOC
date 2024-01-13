@@ -7,7 +7,8 @@ module Lang
     flatten,
     select,
     assign,
-    mempatch)
+    mempatch,
+    toString)
     where
 
 import qualified R1 as R
@@ -24,6 +25,7 @@ import qualified Flatten as F
 import qualified ISelect as IS
 import qualified AssignHome as AH
 import qualified MemPatch as MP
+import qualified Print as Pr
 
 lexing :: String -> [L.Token]
 lexing = L.alexScanTokens
@@ -51,3 +53,6 @@ assign = AH.run . select
 
 mempatch :: String -> X.Program
 mempatch = MP.run . assign
+
+toString :: String -> String
+toString = Pr.run . mempatch
