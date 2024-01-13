@@ -1,25 +1,12 @@
-module X86V (Label, Reg (..), Arg (..), Instr (..), Program (..)) where
+module X86V
+    (Label, Ident,
+     Reg (..), Arg (..), Instr (..), Program (..)
+    ) where
 
 type Label = String
 type Ident = String
 
-data Reg =
-    RSP
-    | RBP
-    | RAX
-    | RBX
-    | RCX
-    | RDX
-    | RSI
-    | RDI
-    | R8
-    | R9
-    | R10
-    | R11
-    | R12
-    | R13
-    | R14
-    | R15
+data Reg = RAX
     deriving (Show, Eq)
 
 data Arg =

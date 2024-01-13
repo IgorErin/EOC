@@ -14,32 +14,28 @@ run (C.Program vars stmts) =
 runStmt :: C.Stmt -> Writer [X.Instr] ()
 runStmt (C.SAssign name expr) = tell $ runAssign name expr
 runStmt (C.SReturn arg) =
-    tell [ X.Movq (X.AReg X.RAX) $ runArg arg ]
+    tell [ X.Movq (runArg arg) (X.AReg X.RAX) ]
 
 runAssign :: C.Ident -> C.Expr -> [X.Instr]
 runAssign name (C.EArg arg) =
-    [ X.Movq (X.AVar name) $ runArg arg ]
+    [ X.Movq (runArg arg) (X.AVar name)  ]
 runAssign name (C.ESub arg) =
-    [ X.Movq (X.AVar name) $ runArg arg ,
+    [ X.Movq (runArg arg) (X.AVar name),
       X.Subq (X.AVar name) ]
 runAssign name (C.EAdd left right) = runAdd name left right
 runAssign name C.ERead =
     [ X.Callq "read_int",
-      X.Movq (X.AVar name) (X.AReg X.RAX) ]
+      X.Movq (X.AReg X.RAX) (X.AVar name) ]
 
 runAdd :: C.Ident -> C.Arg -> C.Arg -> [X.Instr]
 runAdd name ((C.AVar leftVar)) rightArg | name == leftVar =
-    [ X.Addq (X.AVar name) $ runArg rightArg ]
+    [ X.Addq (runArg rightArg) (X.AVar name) ]
 runAdd name leftArg ((C.AVar rightVar)) | name == rightVar =
-    [ X.Addq (X.AVar name) $ runArg leftArg ]
+    [ X.Addq (runArg leftArg) (X.AVar name)  ]
 runAdd name left right =
-    [ X.Movq (X.AVar name) $ runArg left,
-      X.Addq (X.AVar name) $ runArg right ]
+    [ X.Movq (runArg left) (X.AVar name),
+      X.Addq (runArg right) (X.AVar name) ]
 
 runArg :: C.Arg -> X.Arg
 runArg (C.AVar n) = X.AVar n
 runArg (C.AInt n) = X.AInt n
-
-zero :: X.Arg
-zero = X.AInt 0
-

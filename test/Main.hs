@@ -9,6 +9,7 @@ import qualified Tests.Inter as I (tests)
 import qualified Tests.Uniquify as U (tests)
 import qualified Tests.Flatten as F (tests)
 import qualified Tests.ISelect as IS (tests)
+import qualified Tests.AssignHome as AH (tests)
 
 tests :: TestTree
 tests = testGroup "Main" [
@@ -18,7 +19,8 @@ tests = testGroup "Main" [
     I.tests,
     U.tests,
     F.tests,
-    IS.tests ]
+    IS.tests,
+    AH.tests ]
 
 main :: IO ()
 main = defaultMain tests

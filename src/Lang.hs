@@ -5,12 +5,14 @@ module Lang
     run,
     unique,
     flatten,
-    select)
+    select,
+    assign)
     where
 
 import qualified R1 as R
 import qualified C0 as C
 import qualified X86V as XV
+import qualified X86 as X
 
 import qualified Parser as P
 import qualified Pareval as PE
@@ -19,6 +21,7 @@ import qualified Inter as I
 import qualified Uniquify as U
 import qualified Flatten as F
 import qualified ISelect as IS
+import qualified AssignHome as AH
 
 lexing :: String -> [L.Token]
 lexing = L.alexScanTokens
@@ -40,3 +43,6 @@ flatten = F.run . unique
 
 select :: String -> XV.Program
 select = IS.run . flatten
+
+assign :: String -> X.Program
+assign = AH.run . select

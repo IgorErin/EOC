@@ -19,11 +19,13 @@ data Reg =
     | R13
     | R14
     | R15
+    deriving (Show, Eq)
 
 data Arg =
     AInt Int
     | AReg Reg
     | ADeref Int Reg
+    deriving (Show, Eq)
 
 data Instr =
     Addq Arg Arg
@@ -34,5 +36,6 @@ data Instr =
     | Pushq Arg
     | Popq Arg
     | Retq
+    deriving (Show, Eq)
 
-data Program = Program Int [Instr]
+data Program = Program Int [Instr] deriving (Show, Eq)
