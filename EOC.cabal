@@ -34,6 +34,7 @@ library
       Lang
       Lexer
       Lib
+      MemPatch
       Pareval
       Parser
       R1
@@ -83,6 +84,7 @@ test-suite EOC-test
       Tests.Inter
       Tests.ISelect
       Tests.Lexer
+      Tests.MemPatch
       Tests.Pareval
       Tests.Parser
       Tests.Uniquify

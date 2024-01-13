@@ -6,7 +6,8 @@ module Lang
     unique,
     flatten,
     select,
-    assign)
+    assign,
+    mempatch)
     where
 
 import qualified R1 as R
@@ -22,6 +23,7 @@ import qualified Uniquify as U
 import qualified Flatten as F
 import qualified ISelect as IS
 import qualified AssignHome as AH
+import qualified MemPatch as MP
 
 lexing :: String -> [L.Token]
 lexing = L.alexScanTokens
@@ -46,3 +48,6 @@ select = IS.run . flatten
 
 assign :: String -> X.Program
 assign = AH.run . select
+
+mempatch :: String -> X.Program
+mempatch = MP.run . assign
