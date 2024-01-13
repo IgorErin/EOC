@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Flatten where
+module Flatten (run) where
 
 import qualified R1 as R
 import qualified C0 as C

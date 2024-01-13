@@ -1,4 +1,4 @@
-module Tests.Inter where
+module Tests.Inter (tests) where
 
 import Test.Tasty ( TestTree, testGroup )
 import Test.Tasty.HUnit ((@?=), testCase)

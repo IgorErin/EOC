@@ -4,7 +4,7 @@ import Data.Map as Map
 import Data.Function
 import Data.Maybe (fromMaybe)
 
-import R1
+import R1 ( Program(..), Expr(..), Ident )
 
 run :: [Int] -> Program -> Int
 run input (Program expr) = runExpr input Map.empty expr

@@ -28,6 +28,7 @@ library
       C0
       Flatten
       Inter
+      ISelect
       Lang
       Lexer
       Lib
@@ -36,6 +37,7 @@ library
       R1
       Uniquify
       X86
+      X86V
   other-modules:
       Paths_EOC
   autogen-modules:
@@ -76,6 +78,7 @@ test-suite EOC-test
   other-modules:
       Tests.Flatten
       Tests.Inter
+      Tests.ISelect
       Tests.Lexer
       Tests.Pareval
       Tests.Parser

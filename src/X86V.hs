@@ -1,6 +1,7 @@
-module X86 (Label, Reg (..), Arg (..), Instr (..), Program (..)) where
+module X86V (Label, Reg (..), Arg (..), Instr (..), Program (..)) where
 
 type Label = String
+type Ident = String
 
 data Reg =
     RSP
@@ -19,11 +20,13 @@ data Reg =
     | R13
     | R14
     | R15
+    deriving (Show, Eq)
 
 data Arg =
     AInt Int
+    | AVar Ident
     | AReg Reg
-    | ADeref Int Reg
+    deriving (Show, Eq)
 
 data Instr =
     Addq Arg Arg
@@ -34,5 +37,6 @@ data Instr =
     | Pushq Arg
     | Popq Arg
     | Retq
+    deriving (Show, Eq)
 
-data Program = Program Int [Instr]
+data Program = Program [Ident] [Instr] deriving (Show, Eq)

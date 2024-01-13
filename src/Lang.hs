@@ -4,11 +4,13 @@ module Lang
     partial,
     run,
     unique,
-    flatten)
+    flatten,
+    select)
     where
 
 import qualified R1 as R
 import qualified C0 as C
+import qualified X86V as XV
 
 import qualified Parser as P
 import qualified Pareval as PE
@@ -16,6 +18,7 @@ import qualified Lexer as L
 import qualified Inter as I
 import qualified Uniquify as U
 import qualified Flatten as F
+import qualified ISelect as IS
 
 lexing :: String -> [L.Token]
 lexing = L.alexScanTokens
@@ -34,3 +37,6 @@ unique = U.run . parsing
 
 flatten :: String -> C.Program
 flatten = F.run . unique
+
+select :: String -> XV.Program
+select = IS.run . flatten
