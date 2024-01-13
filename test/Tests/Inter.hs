@@ -4,7 +4,7 @@ import Test.Tasty ( TestTree, testGroup )
 import Test.Tasty.HUnit ((@?=), testCase)
 
 import Lang (run)
-import Ast
+import R1
 
 cases :: [(String, [Int], Int)]
 cases = [

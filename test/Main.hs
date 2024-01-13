@@ -7,6 +7,7 @@ import qualified Tests.Parser as P (tests)
 import qualified Tests.Pareval as PE (tests)
 import qualified Tests.Inter as I (tests)
 import qualified Tests.Uniquify as U (tests)
+import qualified Tests.Flatten as F (tests)
 
 tests :: TestTree
 tests = testGroup "Main" [
@@ -14,7 +15,8 @@ tests = testGroup "Main" [
     P.tests,
     PE.tests,
     I.tests,
-    U.tests]
+    U.tests,
+    F.tests ]
 
 main :: IO ()
 main = defaultMain tests

@@ -1,18 +1,125 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Flatten where
 
 import qualified R1 as R
 import qualified C0 as C
 
--- fetch :: R.Expr -> ([C.Ident], [C.Stmt], C.Expr)
--- fetch (R.EInt n) = ([], [], C.EArg $ C.AInt n)
--- fetch R.ERead = ([], [], C.ERead)
--- fetch (R.ESub expr) =
---     let (vars, stms, expr') = fetch expr
+import Control.Monad.State
+import Control.Monad.Writer
 
---     in
--- fetch _ = undefined
+import Control.Lens
+
+data Ctx = Ctx {
+    _assigns :: [C.Stmt],
+    _vars :: [C.Ident],
+    _count :: Int
+}
+
+$(makeLenses ''Ctx)
+
+initCtx :: R.Expr -> Ctx
+initCtx expr = Ctx {
+    _assigns = [],
+    _vars = execWriter $ getVars expr,
+    _count  = 0
+}
 
 run :: R.Program -> C.Program
-run = undefined
+run (R.Program expr) =
+    let st = fetchArg expr
+        initCtx' = initCtx expr
 
-runExpr = undefined
+        (arg, ctx) = runState st initCtx'
+
+        returnStm = C.SReturn arg
+        stms = returnStm : view assigns ctx & reverse
+
+        exprVars = view vars ctx
+
+    in C.Program exprVars stms
+
+fetchExpr :: R.Expr -> State Ctx C.Expr
+fetchExpr (R.EInt n)              = return $ C.EArg $ C.AInt n
+fetchExpr R.ERead                 = return C.ERead
+fetchExpr (R.ESub expr)           = do
+    arg <- fetchArg expr
+
+    return $ C.ESub arg
+fetchExpr (R.EAdd left right)     = do
+    leftArg <- fetchArg left
+    rightArg <- fetchArg right
+
+    return $ C.EAdd leftArg rightArg
+fetchExpr (R.ELet name expr body) = do
+    expr' <- fetchExpr expr
+    addAssign name expr'
+
+    fetchExpr body
+fetchExpr (R.EIdent name)         = return $ C.EArg $ C.AVar name
+
+fetchArg :: R.Expr -> State Ctx C.Arg
+fetchArg (R.EInt n)              = return $ C.AInt n
+fetchArg R.ERead                 = do
+    name <- nameExpr C.ERead
+
+    return $ C.AVar name
+fetchArg (R.ESub expr)           = do
+    arg <- fetchArg expr
+    name <- nameExpr $ C.ESub arg
+
+    return $ C.AVar name
+fetchArg (R.EAdd left right)     = do
+    leftName <- fetchArg left
+    rightName <- fetchArg right
+
+    name <- nameExpr $ C.EAdd leftName rightName
+
+    return $ C.AVar name
+fetchArg (R.ELet name expr body) = do
+    expr' <- fetchExpr expr
+    addAssign name expr'
+
+    fetchArg body
+fetchArg (R.EIdent name)         = return $ C.AVar name
+
+nameExpr :: C.Expr -> State Ctx C.Ident
+nameExpr expr = do
+    name <- newName
+    addAssign name expr
+
+    return name
+
+
+addAssign :: C.Ident -> C.Expr -> State Ctx ()
+addAssign name expr = modify $ over assigns (C.SAssign name expr :)
+
+type Names = [R.Ident]
+
+getVars :: R.Expr -> Writer Names ()
+getVars (R.EInt _)              = return ()
+getVars R.ERead                 = return ()
+getVars (R.ESub expr)           = getVars expr
+getVars (R.EAdd left right)     = do
+    getVars left
+    getVars right
+getVars (R.ELet name expr body) = do
+    tell [name]
+
+    getVars expr
+    getVars body
+getVars (R.EIdent _)         = return ()
+
+newName :: State Ctx C.Ident
+newName = do
+    vars' <- gets (view vars)
+    count' <- gets (view count)
+
+    let name = "t" ++ show count'
+    modify $ over count succ
+
+    if name `elem` vars'
+    then newName
+    else do
+        modify $ over vars (name :)
+        return name

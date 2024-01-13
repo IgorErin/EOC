@@ -1,11 +1,11 @@
-module Tests.Parser (tests) where 
+module Tests.Parser (tests) where
 
-import Test.Tasty 
+import Test.Tasty
 import Test.Tasty.HUnit ((@?=), testCase)
 
 import Lexer (alexScanTokens)
 import qualified Parser as P
-import Ast 
+import R1
 
 cases :: [(String, Program)]
 cases = [
@@ -17,13 +17,13 @@ cases = [
     ]
 
 run :: String -> Program
-run = P.run . alexScanTokens 
+run = P.run . alexScanTokens
 
 tests :: TestTree
-tests = 
+tests =
     testGroup "Parsing" $
-    map (\ (str, expected) -> 
-        let x = run str in 
+    map (\ (str, expected) ->
+        let x = run str in
         testCase str $ x @?= expected
-        ) 
-        cases 
+        )
+        cases

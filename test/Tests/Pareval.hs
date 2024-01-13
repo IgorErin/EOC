@@ -1,10 +1,10 @@
-module Tests.Pareval (tests) where 
+module Tests.Pareval (tests) where
 
-import Test.Tasty ( TestTree, testGroup ) 
+import Test.Tasty ( TestTree, testGroup )
 import Test.Tasty.HUnit ((@?=), testCase)
 
 import Lang (partial)
-import Ast 
+import R1
 
 cases :: [(String, Program)]
 cases = [
@@ -17,9 +17,9 @@ cases = [
     ("(+ 1 (+ (read) 1))", program (add read_ (int 2))) ]
 
 tests :: TestTree
-tests = 
+tests =
     testGroup "Partial" $
-    map (\ (str, expected) -> 
-        let x = partial str in 
-        testCase str $ x @?= expected) 
-        cases 
+    map (\ (str, expected) ->
+        let x = partial str in
+        testCase str $ x @?= expected)
+        cases

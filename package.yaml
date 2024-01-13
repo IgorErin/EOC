@@ -39,13 +39,16 @@ ghc-options:
 
 library:
   source-dirs: src
-  dependencies: 
-  - array 
+  dependencies:
+  - array
   - base
-  - bytestring 
+  - bytestring
   - containers
-  build-tool-depends: 
-  - alex 
+  - mtl
+  - lens
+  - extra
+  build-tool-depends:
+  - alex
   - happy
 
 executables:
@@ -69,5 +72,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - EOC
-    - tasty 
+    - tasty
     - tasty-hunit

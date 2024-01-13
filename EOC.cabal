@@ -25,14 +25,15 @@ source-repository head
 
 library
   exposed-modules:
-      Ast
       C0
+      Flatten
       Inter
       Lang
       Lexer
       Lib
       Pareval
       Parser
+      R1
       Uniquify
       X86
   other-modules:
@@ -50,6 +51,9 @@ library
     , base
     , bytestring
     , containers
+    , extra
+    , lens
+    , mtl
   default-language: Haskell2010
 
 executable EOC-exe
@@ -70,6 +74,7 @@ test-suite EOC-test
   type: exitcode-stdio-1.0
   main-is: Main.hs
   other-modules:
+      Tests.Flatten
       Tests.Inter
       Tests.Lexer
       Tests.Pareval

@@ -4,11 +4,12 @@ module Uniquify (run) where
 
 import R1 as R ( Expr(..), Ident, Program(..) )
 
-import Data.Map as Map
+import Data.Map as Map (empty, insert, lookup, Map)
+import Data.Maybe (fromMaybe)
 
-import Control.Monad.State
-import Control.Monad.Except
-import Control.Lens
+import Control.Monad.State (gets, modify, evalState, State)
+import Control.Lens ((&), set, makeLenses)
+
 
 newName :: [R.Ident] -> Ident -> Ident
 newName e current =
@@ -24,9 +25,10 @@ data Names = Names { _old_names:: [R.Ident], _names_map:: Map Ident Ident }
 
 $(makeLenses ''Names)
 
+initNames :: Names
 initNames = Names { _old_names = [], _names_map = Map.empty }
 
-runExpr' :: Expr -> StateT Names (Except String) Expr
+runExpr' :: Expr -> State Names  Expr
 runExpr' n@(EInt _) = do return n
 runExpr' ERead = do return ERead
 runExpr' (ESub expr) = do
@@ -56,16 +58,10 @@ runExpr' (ELet name expr body) = do
 runExpr' (EIdent name) = do
     nmap <- gets _names_map
 
-    name' <- case Map.lookup name nmap of
-            Just x ->  return x
-            Nothing -> throwError $ "name not found" ++ name
+    let name' = Map.lookup name nmap
+                & fromMaybe (error $ "name not found" ++ name)
 
     return $ EIdent name'
 
 run :: Program -> Program
-run (Program expr) =
-    let mb =  evalStateT (runExpr' expr) initNames
-        eitherResult =runIdentity $ runExceptT mb
-    in case eitherResult of
-        Left m -> error m
-        Right v -> Program v
+run (Program expr) = Program $ evalState (runExpr' expr) initNames
