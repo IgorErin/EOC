@@ -34,14 +34,14 @@ library
       Lang
       Lexer
       Lib
-      MemPatch
       Pareval
       Parser
       Print
       R1
+      Regs
+      RV
+      RV32
       Uniquify
-      X86
-      X86V
   other-modules:
       Paths_EOC
   autogen-modules:
@@ -85,7 +85,6 @@ test-suite EOC-test
       Tests.Inter
       Tests.ISelect
       Tests.Lexer
-      Tests.MemPatch
       Tests.Pareval
       Tests.Parser
       Tests.Print

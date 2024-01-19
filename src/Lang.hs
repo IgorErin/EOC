@@ -7,14 +7,13 @@ module Lang
     flatten,
     select,
     assign,
-    mempatch,
     toString)
     where
 
 import qualified R1 as R
 import qualified C0 as C
-import qualified X86V as XV
-import qualified X86 as X
+import qualified RV
+import qualified RV32
 
 import qualified Parser as P
 import qualified Pareval as PE
@@ -24,7 +23,6 @@ import qualified Uniquify as U
 import qualified Flatten as F
 import qualified ISelect as IS
 import qualified AssignHome as AH
-import qualified MemPatch as MP
 import qualified Print as Pr
 
 lexing :: String -> [L.Token]
@@ -45,14 +43,11 @@ unique = U.run . parsing
 flatten :: String -> C.Program
 flatten = F.run . unique
 
-select :: String -> XV.Program
+select :: String -> RV.Program
 select = IS.run . flatten
 
-assign :: String -> X.Program
+assign :: String -> RV32.Program
 assign = AH.run . select
 
-mempatch :: String -> X.Program
-mempatch = MP.run . assign
-
 toString :: String -> String
-toString = Pr.run . mempatch
+toString = Pr.run . assign

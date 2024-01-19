@@ -13,7 +13,7 @@ empty :: Frame
 empty = Frame { _fsize = 0 }
 
 intSize :: Int
-intSize = 8
+intSize = 4
 
 nextOffset :: State Frame Int
 nextOffset = do
@@ -23,4 +23,10 @@ nextOffset = do
     return $ current * intSize
 
 getSize :: Frame -> Int
-getSize = (* intSize) . view fsize
+getSize fr =
+    let finSize :: Int
+        finSize = (* intSize) . view fsize $ fr
+    in foldr (\left acc ->
+            if left >= finSize then left else acc)
+        (error "infinit finit")
+        $ iterate (*4) 4

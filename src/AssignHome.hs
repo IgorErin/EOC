@@ -2,8 +2,9 @@
 
 module AssignHome where
 
-import qualified X86V as XV
-import qualified X86 as X
+import qualified RV32
+import qualified RV
+import Regs
 
 import Frame as F
 
@@ -14,7 +15,7 @@ import Data.Map as Map ( insert, lookup, Map , empty )
 
 data Ctx = Ctx {
     _frame :: Frame,
-    _mname :: Map XV.Ident Int
+    _mname :: Map RV.Ident Int
 }
 
 initCtx :: Ctx
@@ -25,51 +26,52 @@ initCtx = Ctx {
 
 $(makeLenses ''Ctx)
 
-run :: XV.Program -> X.Program
-run (XV.Program _ insts) =
+run :: RV.Program -> RV32.Program
+run (RV.Program _ insts) =
     let s = mapM runInstr insts
         (insts', ctx) = runState s initCtx
-        sSize = F.getSize $ view frame ctx
-    in X.Program sSize insts'
+        fr = F.getSize $ view frame ctx
+    in RV32.Program fr insts'
 
-runInstr :: XV.Instr -> State Ctx X.Instr
-runInstr (XV.Addq left right) = do
-    l <- runArg left
-    r <- runArg right
+returnS :: RV32.Instr -> State Ctx [RV32.Instr]
+returnS = return . (: [])
 
-    return $ X.Addq l r
-runInstr (XV.Subq left right) = do
-    l' <- runArg left
-    r' <- runArg right
-    return $ X.Subq l' r'
-runInstr (XV.Negq arg) = do
-    arg' <- runArg arg
-    return $ X.Negq arg'
-runInstr (XV.Movq left right) = do
-    xleft <- runArg left
-    xright <- runArg right
+runInstr :: RV.Instr -> State Ctx RV32.Instr
+runInstr (RV.Addi dest left imm) =
+    return $ RV32.Addi dest left imm
+runInstr (RV.Add dest left right) =
+    return $ RV32.Add dest left right
+runInstr (RV.Sub dest left right) =
+    return $ RV32.Sub dest left right
+runInstr (RV.Subi dest left imm) =
+    return $ RV32.Subi dest left imm
+runInstr (RV.Neg dest arg) =
+    return $ RV32.Neg dest arg
+runInstr (RV.Mov dest arg) =
+    return $ RV32.Mov dest arg
+runInstr (RV.Jal name) =
+    return $ RV32.Jal name
+runInstr RV.Ret = return RV32.Ret
+runInstr (RV.Li dest imm) =
+    return $ RV32.Li dest imm
+runInstr (RV.Lw dest ident) = do
+    (offset, reg) <- runIdent ident
 
-    return $ X.Movq xleft xright
-runInstr (XV.Callq name) = return $ X.Callq name
-runInstr (XV.Pushq arg) = do
-    arg' <- runArg arg
-    return $ X.Pushq arg'
-runInstr (XV.Popq arg) = do
-    arg' <- runArg arg
-    return $ X.Popq arg'
-runInstr XV.Retq = return X.Retq
+    return $ RV32.Lw dest offset reg
+runInstr (RV.Sw src ident) = do
+    (offset, reg) <- runIdent ident
 
-runArg :: XV.Arg -> State Ctx X.Arg
-runArg (XV.AInt n) = return $ X.AInt n
-runArg (XV.AVar n) = do
+    return $ RV32.Sw src offset reg
+
+runIdent :: RV.Ident ->  State Ctx (Int, Reg)
+runIdent name = do
     nmap' <- gets $ view mname
-    let x = Map.lookup n nmap'
+    let x = Map.lookup name nmap'
 
     case x of
-        Just x' -> return $ X.ADeref x' X.RBP
+        Just x' -> return (x', Sp)
         Nothing -> do
             count <- zoom frame F.nextOffset
-            modify (over mname $ Map.insert n count)
+            modify (over mname $ Map.insert name count)
 
-            return $ X.ADeref count X.RBP
-runArg (XV.AReg XV.RAX) = return $ X.AReg X.RAX
+            return (count, Sp)

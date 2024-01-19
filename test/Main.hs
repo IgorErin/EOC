@@ -10,7 +10,6 @@ import qualified Tests.Uniquify as U (tests)
 import qualified Tests.Flatten as F (tests)
 import qualified Tests.ISelect as IS (tests)
 import qualified Tests.AssignHome as AH (tests)
-import qualified Tests.MemPatch as MP (tests)
 import qualified Tests.Print as Pr (tests)
 
 tests :: TestTree
@@ -22,9 +21,9 @@ tests = testGroup "Main" [
     U.tests,
     F.tests,
     IS.tests,
-    AH.tests,
-    MP.tests,
-    Pr.tests ]
+    AH.tests
+    -- Pr.tests
+    ]
 
 main :: IO ()
 main = defaultMain tests

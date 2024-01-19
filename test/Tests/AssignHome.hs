@@ -4,35 +4,16 @@ import Test.Tasty ( TestTree, testGroup )
 import Test.Tasty.HUnit ((@?=), testCase)
 
 import Lang (assign)
-import X86
+import RV32
 
 cases :: [(String, Program)]
-cases = [
-    ("let x = (- (+ 4 5)) in x",
-    Program 16
-    [ Movq (AInt 4) (ADeref 0 RBP),
-      Addq (AInt 5) (ADeref 0 RBP),
-      Movq (AInt 0) (ADeref 8 RBP),
-      Subq (ADeref 0 RBP) (ADeref 8 RBP),
-      Movq (ADeref 8 RBP) (AReg RAX) ]
-    ),
-    ("let x = let y = (+ (- 1) 2) in (+ (- y) 3) in x",
-    Program 32
-    [ Movq (AInt (-1)) (ADeref 0 RBP),
-      Movq (ADeref 0 RBP) (ADeref 8 RBP),
-      Addq (AInt 2) (ADeref 8 RBP),
-      Movq (AInt 0) (ADeref 16 RBP),
-      Subq (ADeref 8 RBP) (ADeref 16 RBP),
-      Movq (ADeref 16 RBP) (ADeref 24 RBP),
-      Addq (AInt 3) (ADeref 24 RBP),
-      Movq (ADeref 24 RBP) (AReg RAX) ]
-    ),
-    ("let a = 3 in let b = a in b",
-    Program 16
-    [ Movq (AInt 3) (ADeref 0 RBP),
-      Movq (ADeref 0 RBP) (ADeref 8 RBP),
-      Movq (ADeref 8 RBP) (AReg RAX) ]
-    )]
+cases = [ ("let x = 4 in x", Program {
+            frameSize = 4,
+            code = [Li T0 4,Sw T0 0 Sp,Lw A0 0 Sp]
+            }),
+          ("let x = (- (+ 4 5)) in x", Program 0 []),
+          ("let a = 3 in let b = a in b", Program 0 [])
+           ]
 
 tests :: TestTree
 tests =
