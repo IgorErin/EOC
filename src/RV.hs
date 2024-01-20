@@ -1,12 +1,12 @@
 module RV (
     Offset, Reg (..), Instr (..),
-    Program (..), Ident
+    Program (..)
     ) where
 
+import Ident (Ident)
 import Regs (Reg (..))
 
 type Offset = Int
-type Ident = String
 type Imm = Int
 
 data Instr =

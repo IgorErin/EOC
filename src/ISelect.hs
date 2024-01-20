@@ -1,7 +1,11 @@
+-- {-# LANGUAGE OverloadedStrings #-}
+
 module ISelect (run) where
 
 import qualified C0 as C
 import qualified RV
+
+import Ident (Ident)
 
 import Control.Monad.Writer
     ( MonadWriter(tell), execWriter, Writer )
@@ -19,7 +23,7 @@ runStmt (C.SReturn (C.AVar ident)) =
 runStmt (C.SReturn (C.AInt imm)) =
     tell [ RV.Li RV.A0 imm ]
 
-runAssign :: C.Ident -> C.Expr -> [RV.Instr]
+runAssign :: Ident -> C.Expr -> [RV.Instr]
 runAssign name (C.EArg (C.AInt imm)) =
     [ RV.Li RV.T0 imm,
       RV.Sw RV.T0 name ]
@@ -39,7 +43,7 @@ runAssign name C.ERead =
     [ RV.Jal "read_int",
       RV.Sw RV.A0 name ]
 
-runAdd :: C.Ident -> C.Arg -> C.Arg -> [RV.Instr]
+runAdd :: Ident -> C.Arg -> C.Arg -> [RV.Instr]
 runAdd name (C.AVar leftIdent) (C.AVar rightIdent) =
     [ RV.Lw RV.T0 leftIdent,
       RV.Lw RV.T1 rightIdent,

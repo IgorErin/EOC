@@ -2,7 +2,9 @@
 
 module Uniquify (run) where
 
-import R1 as R ( Expr(..), Ident, Program(..) )
+import R1 as R ( Expr(..), Program(..) )
+
+import Ident (Ident, newIdent)
 
 import Data.Map as Map (empty, insert, lookup, Map)
 import Data.Maybe (fromMaybe)
@@ -10,23 +12,22 @@ import Data.Maybe (fromMaybe)
 import Control.Monad.State (gets, modify, evalState, State)
 import Control.Lens ((&), set, makeLenses)
 
-
-newName :: [R.Ident] -> Ident -> Ident
-newName e current =
-    let newNameWith :: Int -> Ident -> Ident
-        newNameWith count name =
-            let numbered = (name ++ show count) in
-            if numbered `elem` e
-            then newNameWith (count + 1) name
-            else numbered
-    in newNameWith 0 current
-
-data Names = Names { _old_names:: [R.Ident], _names_map:: Map Ident Ident }
+data Names = Names { _old_names:: [Ident], _names_map:: Map Ident Ident }
 
 $(makeLenses ''Names)
 
 initNames :: Names
 initNames = Names { _old_names = [], _names_map = Map.empty }
+
+newName :: [Ident] -> Ident -> Ident
+newName e current =
+    let newNameWith :: Int -> Ident -> Ident
+        newNameWith count name =
+            let numbered = newIdent count name in
+            if numbered `elem` e
+            then newNameWith (count + 1) name
+            else numbered
+    in newNameWith 0 current
 
 runExpr' :: Expr -> State Names  Expr
 runExpr' n@(EInt _) = do return n
@@ -59,7 +60,7 @@ runExpr' (EIdent name) = do
     nmap <- gets _names_map
 
     let name' = Map.lookup name nmap
-                & fromMaybe (error $ "name not found" ++ name)
+                & fromMaybe (error "name not found")
 
     return $ EIdent name'
 

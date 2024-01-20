@@ -25,29 +25,31 @@ import qualified ISelect as IS
 import qualified AssignHome as AH
 import qualified Print as Pr
 
-lexing :: String -> [L.Token]
+import Data.ByteString.Lazy (ByteString)
+
+lexing :: ByteString -> [L.Token]
 lexing = L.alexScanTokens
 
-parsing :: String -> R.Program
+parsing :: ByteString -> R.Program
 parsing = P.run . lexing
 
-partial :: String -> R.Program
+partial :: ByteString -> R.Program
 partial = PE.run . parsing
 
-run :: [Int] -> String -> Int
+run :: [Int] -> ByteString -> Int
 run args = I.run args . parsing
 
-unique :: String -> R.Program
+unique :: ByteString -> R.Program
 unique = U.run . parsing
 
-flatten :: String -> C.Program
+flatten :: ByteString -> C.Program
 flatten = F.run . unique
 
-select :: String -> RV.Program
+select :: ByteString -> RV.Program
 select = IS.run . flatten
 
-assign :: String -> RV32.Program
+assign :: ByteString -> RV32.Program
 assign = AH.run . select
 
-toString :: String -> String
+toString :: ByteString -> String
 toString = Pr.run . assign

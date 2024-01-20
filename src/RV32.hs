@@ -1,10 +1,10 @@
 module RV32 (Offset, Reg (..), Instr (..), Program (..)) where
 
+import Ident (Ident)
 import Regs ( Reg(..) )
 
 type Offset = Int
 type Imm = Int
-type Ident = String
 
 data Instr =
     Add Reg Reg Reg

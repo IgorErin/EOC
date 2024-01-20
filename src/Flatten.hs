@@ -5,6 +5,8 @@ module Flatten (run) where
 import qualified R1 as R
 import qualified C0 as C
 
+import Ident (Ident, newIdent)
+
 import Control.Monad.State
 import Control.Monad.Writer
 
@@ -12,7 +14,7 @@ import Control.Lens
 
 data Ctx = Ctx {
     _assigns :: [C.Stmt],
-    _vars :: [C.Ident],
+    _vars :: [Ident],
     _count :: Int
 }
 
@@ -83,7 +85,7 @@ fetchArg (R.ELet name expr body) = do
     fetchArg body
 fetchArg (R.EIdent name)         = return $ C.AVar name
 
-nameExpr :: C.Expr -> State Ctx C.Ident
+nameExpr :: C.Expr -> State Ctx Ident
 nameExpr expr = do
     name <- newName
     addAssign name expr
@@ -91,10 +93,10 @@ nameExpr expr = do
     return name
 
 
-addAssign :: C.Ident -> C.Expr -> State Ctx ()
+addAssign :: Ident -> C.Expr -> State Ctx ()
 addAssign name expr = modify $ over assigns (C.SAssign name expr :)
 
-type Names = [R.Ident]
+type Names = [Ident]
 
 getVars :: R.Expr -> Writer Names ()
 getVars (R.EInt _)              = return ()
@@ -110,12 +112,12 @@ getVars (R.ELet name expr body) = do
     getVars body
 getVars (R.EIdent _)         = return ()
 
-newName :: State Ctx C.Ident
+newName :: State Ctx Ident
 newName = do
     vars' <- gets (view vars)
     count' <- gets (view count)
 
-    let name = "t" ++ show count'
+    let name = newIdent count' "t"
     modify $ over count succ
 
     if name `elem` vars'

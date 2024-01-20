@@ -5,7 +5,7 @@ module AssignHome where
 import qualified RV32
 import qualified RV
 import Regs
-
+import Ident (Ident)
 import Frame as F
 
 import Control.Monad.State
@@ -15,7 +15,7 @@ import Data.Map as Map ( insert, lookup, Map , empty )
 
 data Ctx = Ctx {
     _frame :: Frame,
-    _mname :: Map RV.Ident Int
+    _mname :: Map Ident Int
 }
 
 initCtx :: Ctx
@@ -63,7 +63,7 @@ runInstr (RV.Sw src ident) = do
 
     return $ RV32.Sw src offset reg
 
-runIdent :: RV.Ident ->  State Ctx (Int, Reg)
+runIdent :: Ident ->  State Ctx (Int, Reg)
 runIdent name = do
     nmap' <- gets $ view mname
     let x = Map.lookup name nmap'

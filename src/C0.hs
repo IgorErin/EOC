@@ -1,6 +1,6 @@
-module C0 (Ident, Arg(..), Expr (..), Stmt (..), Program (..)) where
+module C0 (Arg(..), Expr (..), Stmt (..), Program (..)) where
 
-type Ident = String
+import Ident (Ident)
 
 data Arg =
     AInt Int

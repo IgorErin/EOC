@@ -1,16 +1,16 @@
 module R1
-    (Program(..), Expr(..), Ident,
+    (Program(..), Expr(..),
     program,
     int, read, sub, read_, add,
     ident, let_)
     where
 
+import Ident (Ident)
+
 newtype Program = Program Expr deriving (Show, Eq)
 
 program :: Expr -> Program
 program = Program
-
-type Ident = String
 
 data Expr =
     EInt Int
