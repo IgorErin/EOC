@@ -1,2 +1,0 @@
-Program
-  { frameSize = 4 , code = [ Li T0 5 , Sw T0 0 Sp , Lw A0 0 Sp ] }

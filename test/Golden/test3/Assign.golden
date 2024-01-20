@@ -1,0 +1,11 @@
+Program
+  { frameSize = 16
+  , code =
+      [ Li t0 (-5)
+      , Sw t0 0 sp
+      , Lw t0 0 sp
+      , Addi t0 t0 4
+      , Sw t0 4 sp
+      , Lw a0 4 sp
+      ]
+  }

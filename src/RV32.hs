@@ -1,4 +1,4 @@
-module RV32 (Offset, Reg (..), Instr (..), Program (..)) where
+module RV32 (Offset, Instr (..), Program (..)) where
 
 import Ident (Ident)
 import Regs ( Reg(..) )

@@ -1,0 +1,9 @@
+Program
+  [ "t0" , "x0" ]
+  [ Li t0 (-5)
+  , Sw t0 "t0"
+  , Lw t0 "t0"
+  , Addi t0 t0 4
+  , Sw t0 "x0"
+  , Lw a0 "x0"
+  ]

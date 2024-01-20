@@ -26,6 +26,7 @@ import qualified AssignHome as AH
 import qualified Print as Pr
 
 import Data.ByteString.Lazy (ByteString)
+import Data.Text.Lazy (Text)
 
 lexing :: ByteString -> [L.Token]
 lexing = L.alexScanTokens
@@ -51,5 +52,5 @@ select = IS.run . flatten
 assign :: ByteString -> RV32.Program
 assign = AH.run . select
 
-toString :: ByteString -> String
+toString :: ByteString -> Text
 toString = Pr.run . assign

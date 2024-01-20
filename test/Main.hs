@@ -3,28 +3,31 @@ module Main (main) where
 import Test.Tasty ( defaultMain, testGroup, TestTree )
 import Test.Tasty.Golden (goldenVsString, findByExtension)
 
-import System.FilePath (takeBaseName, replaceExtension)
+import System.FilePath (takeBaseName, (</>), (<.>))
 
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString.Builder as BSB
-import Data.String
+import Data.String (fromString)
+import Data.Text.Lazy ( Text )
+import Data.Text.Lazy.Encoding as TLE (encodeUtf8)
 
 import Text.Show.Pretty (ppShow)
 
 import qualified Lang as L
-
 import qualified Unit.Inter as Inter (tests)
 
 tests :: IO TestTree
 tests = testGroup "Main" <$> sequence [
   -- Golden tests
-  goldenTests L.lexing "Lexing",
-  goldenTests L.parsing "Parsing",
-  goldenTests L.partial "Partial",
-  goldenTests L.unique "Unique",
-  goldenTests L.flatten "Flatten",
-  goldenTests L.select "Select",
-  goldenTests L.assign "Assign",
+  goldenShow L.lexing "Lexing",
+  goldenShow L.parsing "Parsing",
+  goldenShow L.partial "Partial",
+  goldenShow L.unique "Unique",
+  goldenShow L.flatten "Flatten",
+  goldenShow L.select "Select",
+  goldenShow L.assign "Assign",
+
+  goldenText L.toString "Print",
 
   -- Unit Tests
   pure Inter.tests
@@ -33,16 +36,23 @@ tests = testGroup "Main" <$> sequence [
 main :: IO ()
 main = defaultMain =<< tests
 
-goldenTests :: Show a => (LBS.ByteString -> a) -> String -> IO TestTree
-goldenTests testFun name = do
-  srcFiles <- findByExtension [".np"] $ "test/Golden/"
+goldenShow :: Show a => (LBS.ByteString -> a) -> String -> IO TestTree
+goldenShow testFun = golden (BSB.toLazyByteString . fromString . ppShow . testFun)
+
+goldenText :: (LBS.ByteString -> Text) -> String -> IO TestTree
+goldenText testFun = golden (TLE.encodeUtf8 . testFun)
+
+golden :: (LBS.ByteString -> LBS.ByteString) -> String -> IO TestTree
+golden testFun name = do
+  srcFiles <- findByExtension [".np"] "examples"
   return $ testGroup ("Golden " ++ name)
     [ goldenVsString
         (takeBaseName srcFile)
-        jsonFile
-        (BSB.toLazyByteString <$> fromString <$> ppShow <$> result)
+        (resultDir </> resultFile)
+        (testFun <$> srcCode)
     | srcFile <- srcFiles
-    , let jsonFile = replaceExtension srcFile $ "." ++ name ++ ".golden"
+    , let resultDir = "test" </> "Golden" </> takeBaseName srcFile
+    , let resultFile = name <.> "golden"
     , let srcCode = LBS.readFile srcFile
-    , let result = testFun <$> srcCode
     ]
+

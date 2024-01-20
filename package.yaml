@@ -50,6 +50,7 @@ library:
   - lens
   - extra
   - text
+  - fmt
   build-tool-depends:
   - alex
   - happy
