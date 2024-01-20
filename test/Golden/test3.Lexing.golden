@@ -1,0 +1,14 @@
+[ TLet
+, TIdent "x"
+, TBind
+, TLParent
+, TAdd
+, TInt 4
+, TLParent
+, TSub
+, TInt 5
+, TRParent
+, TRParent
+, TIn
+, TIdent "x"
+]

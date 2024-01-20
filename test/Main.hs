@@ -1,29 +1,48 @@
 module Main (main) where
 
-import Test.Tasty
+import Test.Tasty ( defaultMain, testGroup, TestTree )
+import Test.Tasty.Golden (goldenVsString, findByExtension)
 
-import qualified Tests.Lexer as L (tests)
-import qualified Tests.Parser as P (tests)
-import qualified Tests.Pareval as PE (tests)
-import qualified Tests.Inter as I (tests)
-import qualified Tests.Uniquify as U (tests)
-import qualified Tests.Flatten as F (tests)
-import qualified Tests.ISelect as IS (tests)
-import qualified Tests.AssignHome as AH (tests)
-import qualified Tests.Print as Pr (tests)
+import System.FilePath (takeBaseName, replaceExtension)
 
-tests :: TestTree
-tests = testGroup "Main" [
-    L.tests,
-    P.tests,
-    PE.tests,
-    I.tests,
-    U.tests,
-    F.tests,
-    IS.tests,
-    AH.tests
-    -- Pr.tests
-    ]
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Builder as BSB
+import Data.String
+
+import Text.Show.Pretty (ppShow)
+
+import qualified Lang as L
+
+import qualified Unit.Inter as Inter (tests)
+
+tests :: IO TestTree
+tests = testGroup "Main" <$> sequence [
+  -- Golden tests
+  goldenTests L.lexing "Lexing",
+  goldenTests L.parsing "Parsing",
+  goldenTests L.partial "Partial",
+  goldenTests L.unique "Unique",
+  goldenTests L.flatten "Flatten",
+  goldenTests L.select "Select",
+  goldenTests L.assign "Assign",
+
+  -- Unit Tests
+  pure Inter.tests
+  ]
 
 main :: IO ()
-main = defaultMain tests
+main = defaultMain =<< tests
+
+goldenTests :: Show a => (LBS.ByteString -> a) -> String -> IO TestTree
+goldenTests testFun name = do
+  srcFiles <- findByExtension [".np"] $ "test/Golden/"
+  return $ testGroup ("Golden " ++ name)
+    [ goldenVsString
+        (takeBaseName srcFile)
+        jsonFile
+        (BSB.toLazyByteString <$> fromString <$> ppShow <$> result)
+    | srcFile <- srcFiles
+    , let jsonFile = replaceExtension srcFile $ "." ++ name ++ ".golden"
+    , let srcCode = LBS.readFile srcFile
+    , let result = testFun <$> srcCode
+    ]

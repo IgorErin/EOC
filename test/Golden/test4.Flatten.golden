@@ -1,0 +1,7 @@
+Program
+  [ "t0" , "x0" , "y0" ]
+  [ SAssign "t0" (ESub (AInt 3))
+  , SAssign "y0" (EAdd (AInt 4) (AVar "t0"))
+  , SAssign "x0" (EArg (AVar "y0"))
+  , SReturn (AVar "x0")
+  ]

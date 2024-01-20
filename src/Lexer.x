@@ -2,10 +2,15 @@
 module Lexer(alexScanTokens, Token (..)) where
 
 import Data.Text (Text)
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import qualified Data.ByteString.Char8 as BS (readInt)
+import qualified Data.Text.Lazy.Encoding as TL
 
+import Data.ByteString            as B
+import Data.ByteString.Lazy       as BL
+import Data.Text                  as T
+import Data.Text.Encoding         as T
+import Data.ByteString.Lazy.Char8 as BSC
+
+import Data.Maybe (fromJust)
 }
 
 %wrapper "basic-bytestring"
@@ -18,7 +23,7 @@ $alpha = [a-zA-Z]       -- alphabetic characters
 
 tokens :-
   $white+               ;
-  $digit+               { \s -> TInt undefined }
+  $digit+               { int_ }
 
   "-"                   { \_ -> TSub }
   "+"                   { \_ -> TAdd }
@@ -32,12 +37,18 @@ tokens :-
   "in"                  { \_ -> TIn }
   "="                   { \_ -> TBind }
 
-  @ident                { \ x -> TIdent $ undefined }
+  @ident                { ident }
 
 {
 -- Each action has type :: String -> Token
 
 -- The token type:
+ident :: BL.ByteString -> Token
+ident = TIdent . T.decodeUtf8 . B.concat . BL.toChunks
+
+int_ :: BL.ByteString -> Token
+int_ = TInt . fst . fromJust . BSC.readInt
+
 data Token
   =
   TInt Int

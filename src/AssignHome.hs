@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module AssignHome where
+module AssignHome (run) where
 
 import qualified RV32
 import qualified RV
@@ -32,9 +32,6 @@ run (RV.Program _ insts) =
         (insts', ctx) = runState s initCtx
         fr = F.getSize $ view frame ctx
     in RV32.Program fr insts'
-
-returnS :: RV32.Instr -> State Ctx [RV32.Instr]
-returnS = return . (: [])
 
 runInstr :: RV.Instr -> State Ctx RV32.Instr
 runInstr (RV.Addi dest left imm) =

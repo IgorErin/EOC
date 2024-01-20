@@ -39,6 +39,8 @@ ghc-options:
 
 library:
   source-dirs: src
+  ghc-options:
+  - -XOverloadedStrings
   dependencies:
   - array
   - base
@@ -47,6 +49,7 @@ library:
   - mtl
   - lens
   - extra
+  - text
   build-tool-depends:
   - alex
   - happy
@@ -70,7 +73,13 @@ tests:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -XOverloadedStrings
     dependencies:
     - EOC
     - tasty
     - tasty-hunit
+    - tasty-golden
+    - filepath
+    - bytestring
+    - pretty-show
+    - text

@@ -1,0 +1,2 @@
+Program
+  [ "x0" ] [ SAssign "x0" (EArg (AInt 5)) , SReturn (AVar "x0") ]
