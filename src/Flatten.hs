@@ -33,13 +33,11 @@ run (R.Program expr) =
         initCtx' = initCtx expr
 
         (arg, ctx) = runState st initCtx'
-
-        returnStm = C.SReturn arg
-        stms = returnStm : view assigns ctx & reverse
-
-        exprVars = view vars ctx
-
-    in C.Program exprVars stms
+        stms = view assigns ctx & reverse
+    in C.Program {
+        C.names = view vars ctx,
+        C.body =  stms,
+        C.result = arg }
 
 fetchExpr :: R.Expr -> State Ctx C.Expr
 fetchExpr (R.EInt n)              = return $ C.EArg $ C.AInt n

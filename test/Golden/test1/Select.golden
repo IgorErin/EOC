@@ -1,1 +1,1 @@
-Program [] [ Li a0 4 ]
+Program [] [ Movq (AImm 4) (AReg Rax) ]

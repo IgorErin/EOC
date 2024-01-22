@@ -1,1 +1,3 @@
-Program [ "x0" ] [ Li t0 5 , Sw t0 "x0" , Lw a0 "x0" ]
+Program
+  [ "x0" ]
+  [ Movq (AImm 5) (AVar "x0") , Movq (AVar "x0") (AReg Rax) ]

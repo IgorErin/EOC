@@ -1,13 +1,1 @@
-Program
-  { frameSize = 16
-  , code =
-      [ Li t0 (-3)
-      , Sw t0 0 sp
-      , Lw t0 0 sp
-      , Addi t0 t0 4
-      , Sw t0 4 sp
-      , Lw t0 4 sp
-      , Sw t0 8 sp
-      , Lw a0 8 sp
-      ]
-  }
+Program 48 [Movq $-3 8(%Rbp),Movq $4 16(%Rbp),Addq 8(%Rbp) 16(%Rbp),Movq 16(%Rbp) 24(%Rbp),Movq 24(%Rbp) %Rax]

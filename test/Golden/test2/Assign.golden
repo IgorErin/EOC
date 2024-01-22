@@ -1,2 +1,1 @@
-Program
-  { frameSize = 4 , code = [ Li t0 5 , Sw t0 0 sp , Lw a0 0 sp ] }
+Program 32 [Movq $5 8(%Rbp),Movq 8(%Rbp) %Rax]

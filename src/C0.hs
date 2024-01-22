@@ -16,7 +16,10 @@ data Expr =
 
 data Stmt =
     SAssign Ident Expr
-    | SReturn Arg
     deriving (Eq, Show)
 
-data Program = Program [Ident] [Stmt] deriving (Eq, Show)
+data Program = Program {
+     names :: [Ident],
+     body :: [Stmt],
+     result :: Arg
+  }  deriving (Eq, Show)

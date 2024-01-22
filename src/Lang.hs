@@ -12,8 +12,8 @@ module Lang
 
 import qualified R1 as R
 import qualified C0 as C
-import qualified RV
-import qualified RV32
+import qualified X86V
+import qualified X86
 
 import qualified Parser as P
 import qualified Pareval as PE
@@ -46,10 +46,10 @@ unique = U.run . parsing
 flatten :: ByteString -> C.Program
 flatten = F.run . unique
 
-select :: ByteString -> RV.Program
+select :: ByteString -> X86V.Program
 select = IS.run . flatten
 
-assign :: ByteString -> RV32.Program
+assign :: ByteString -> X86.Program
 assign = AH.run . select
 
 toString :: ByteString -> Text

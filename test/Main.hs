@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Test.Tasty ( defaultMain, testGroup, TestTree )
-import Test.Tasty.Golden (goldenVsString, findByExtension)
+import Test.Tasty.Golden (goldenVsStringDiff, findByExtension)
 
 import System.FilePath (takeBaseName, (</>), (<.>))
 
@@ -46,8 +46,9 @@ golden :: (LBS.ByteString -> LBS.ByteString) -> String -> IO TestTree
 golden testFun name = do
   srcFiles <- findByExtension [".np"] "examples"
   return $ testGroup ("Golden " ++ name)
-    [ goldenVsString
+    [ goldenVsStringDiff
         (takeBaseName srcFile)
+        (\ref new -> ["diff", "-u", ref, new])
         (resultDir </> resultFile)
         (testFun <$> srcCode)
     | srcFile <- srcFiles

@@ -1,13 +1,7 @@
     .global main
 main:
-    addi sp, sp, -16
-    li   t0, -3
-    sw   t0, 0(sp)
-    lw   t0, 0(sp)
-    addi t0, t0, 4
-    sw   t0, 4(sp)
-    lw   t0, 4(sp)
-    sw   t0, 8(sp)
-    lw   a0, 8(sp)
-    addi sp, sp, 16
-    ret
+    movq $-3, 8(%Rbp)
+    movq $4, 16(%Rbp)
+    addq 8(%Rbp), 16(%Rbp)
+    movq 16(%Rbp), 24(%Rbp)
+    movq 24(%Rbp), %Rax

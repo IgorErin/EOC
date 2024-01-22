@@ -30,6 +30,7 @@ library
       Flatten
       Frame
       Ident
+      InstrPatch
       Inter
       ISelect
       Lang
@@ -40,9 +41,9 @@ library
       Print
       R1
       Regs
-      RV
-      RV32
       Uniquify
+      X86
+      X86V
   other-modules:
       Paths_EOC
   autogen-modules:

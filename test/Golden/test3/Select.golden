@@ -1,9 +1,7 @@
 Program
   [ "t0" , "x0" ]
-  [ Li t0 (-5)
-  , Sw t0 "t0"
-  , Lw t0 "t0"
-  , Addi t0 t0 4
-  , Sw t0 "x0"
-  , Lw a0 "x0"
+  [ Movq (AImm (-5)) (AVar "t0")
+  , Movq (AImm 4) (AVar "x0")
+  , Addq (AVar "t0") (AVar "x0")
+  , Movq (AVar "x0") (AReg Rax)
   ]

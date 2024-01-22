@@ -1,65 +1,63 @@
--- {-# LANGUAGE OverloadedStrings #-}
-
 module ISelect (run) where
 
 import qualified C0 as C
-import qualified RV
+import X86V
 
 import Ident (Ident)
+import Regs
 
 import Control.Monad.Writer
     ( MonadWriter(tell), execWriter, Writer )
 
-run :: C.Program -> RV.Program
-run (C.Program vars stmts) =
-    let insts = execWriter $ mapM runStmt stmts
-    in RV.Program vars insts
+run :: C.Program -> X86V.Program
+run (C.Program names body result) =
+    let body' = execWriter $ do
+            mapM_ runStmt body
+            runReturn result
 
-runStmt :: C.Stmt -> Writer [RV.Instr] ()
+    in X86V.Program names body'
+
+runReturn :: C.Arg -> Writer [X86V.Instr] ()
+runReturn (C.AVar ident) =
+    tell [ Movq (AVar ident) (AReg Rax) ]
+runReturn (C.AInt imm) =
+    tell [ Movq (AImm imm) $ AReg Rax ]
+
+runStmt :: C.Stmt -> Writer [X86V.Instr] ()
 runStmt (C.SAssign name expr) =
     tell $ runAssign name expr
-runStmt (C.SReturn (C.AVar ident)) =
-    tell [ RV.Lw RV.A0 ident ]
-runStmt (C.SReturn (C.AInt imm)) =
-    tell [ RV.Li RV.A0 imm ]
 
-runAssign :: Ident -> C.Expr -> [RV.Instr]
+runAssign :: Ident -> C.Expr -> [X86V.Instr]
 runAssign name (C.EArg (C.AInt imm)) =
-    [ RV.Li RV.T0 imm,
-      RV.Sw RV.T0 name ]
+    [ Movq (AImm imm) (AVar name) ]
 runAssign name (C.EArg (C.AVar ident)) =
-    [ RV.Lw RV.T0  ident,
-      RV.Sw RV.T0 name ]
+    [ Movq (AVar ident) (AVar name) ]
 runAssign name (C.ESub (C.AInt num)) =
-    [ RV.Li RV.T0 (-num),
-      RV.Sw RV.T0 name ]
+    [ Movq (AImm (-num)) (AVar name) ]
 runAssign name (C.ESub (C.AVar ident)) =
-    [ RV.Lw RV.T0 ident,
-      RV.Neg RV.T0 RV.T0,
-      RV.Sw RV.T0 name ]
+    [ Movq (AVar ident) (AVar ident),
+      Negq (AVar name) ]
 runAssign name (C.EAdd left right) =
     runAdd name left right
 runAssign name C.ERead =
-    [ RV.Jal "read_int",
-      RV.Sw RV.A0 name ]
+    [ Callq "read_int",
+      Movq (AReg Rax) (AVar name) ]
 
-runAdd :: Ident -> C.Arg -> C.Arg -> [RV.Instr]
-runAdd name (C.AVar leftIdent) (C.AVar rightIdent) =
-    [ RV.Lw RV.T0 leftIdent,
-      RV.Lw RV.T1 rightIdent,
+straightAddArgs :: Arg -> Arg -> Arg -> [Instr]
+straightAddArgs dest left right =
+    [ Movq left dest,
+      Addq right dest ]
 
-      RV.Add RV.T3 RV.T0 RV.T1,
-
-      RV.Sw RV.T3 name ]
-runAdd name (C.AInt leftImm) (C.AInt rightImm) =
-    [ RV.Li RV.T0 leftImm,
-      RV.Addi RV.T0 RV.T0 rightImm,
-      RV.Sw RV.T0 name ]
-runAdd name (C.AInt num) (C.AVar ident) =
-    [ RV.Lw RV.T0 ident,
-      RV.Addi RV.T0 RV.T0 num,
-      RV.Sw RV.T0 name ]
-runAdd name (C.AVar ident) (C.AInt num) =
-    [ RV.Lw RV.T0 ident,
-      RV.Addi RV.T0 RV.T0 num,
-      RV.Sw RV.T0 name ]
+runAdd :: Ident -> C.Arg -> C.Arg -> [Instr]
+runAdd name (C.AVar leftIdent) (C.AVar rightIdent)
+    | name == leftIdent = [ Addq (AVar rightIdent) (AVar name) ]
+    | name == rightIdent = [ Addq (AVar leftIdent) (AVar name) ]
+    | otherwise = straightAddArgs (AVar name) (AVar leftIdent) (AVar rightIdent)
+runAdd name (C.AInt num) (C.AVar ident)
+    | name == ident = [ Addq (AImm num) $ AVar name ]
+    | otherwise = straightAddArgs (AVar name) (AImm num) (AVar ident)
+runAdd name (C.AVar ident) (C.AInt num)
+    | name == ident = [ Addq (AImm num) $ AVar name]
+    | otherwise = straightAddArgs (AVar name) (AVar ident) (AImm num)
+runAdd name (C.AInt leftNum) (C.AInt rightNum) =
+    straightAddArgs (AVar name) (AImm leftNum) (AImm rightNum)

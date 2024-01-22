@@ -1,6 +1,3 @@
     .global main
 main:
-    addi sp, sp, -4
-    li   a0, 4
-    addi sp, sp, 4
-    ret
+    movq $4, %Rax
