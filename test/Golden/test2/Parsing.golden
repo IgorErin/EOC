@@ -1,1 +1,5 @@
-Program (ELet "x" (EInt 5) (EIdent "x"))
+Program
+    { body = ELet "x"
+        ( EInt 5 )
+        ( EIdent "x" )
+    }

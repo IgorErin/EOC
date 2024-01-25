@@ -27,6 +27,7 @@ library
   exposed-modules:
       AssignHome
       C0
+      Common
       Flatten
       Frame
       Ident
@@ -36,8 +37,8 @@ library
       Lang
       Lexer
       Lib
-      Pareval
       Parser
+      ParseTree
       Print
       R1
       Regs
@@ -90,13 +91,14 @@ test-suite EOC-test
       Paths_EOC
   hs-source-dirs:
       test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N -XOverloadedStrings
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N -XOverloadedStrings -XNamedFieldPuns
   build-depends:
       EOC
     , base >=4.7 && <5
     , bytestring
     , filepath
-    , pretty-show
+    , mtl
+    , pretty-simple
     , tasty
     , tasty-golden
     , tasty-hunit

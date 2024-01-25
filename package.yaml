@@ -41,6 +41,7 @@ library:
   source-dirs: src
   ghc-options:
   - -XOverloadedStrings
+  # - -XNoFieldSelectors TODO unnest alex
   dependencies:
   - array
   - base
@@ -75,6 +76,7 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     - -XOverloadedStrings
+    - -XNamedFieldPuns
     dependencies:
     - EOC
     - tasty
@@ -82,5 +84,6 @@ tests:
     - tasty-golden
     - filepath
     - bytestring
-    - pretty-show
+    - pretty-simple
     - text
+    - mtl

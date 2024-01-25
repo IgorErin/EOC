@@ -1,7 +1,25 @@
 Program
-  [ "t0" , "x0" ]
-  [ Movq (AImm (-5)) (AVar "t0")
-  , Movq (AImm 4) (AVar "x0")
-  , Addq (AVar "t0") (AVar "x0")
-  , Movq (AVar "x0") (AReg Rax)
-  ]
+    [ Movq
+        ( AImm
+            ( -5 )
+        )
+        ( AVar
+            ( tmp:1 )
+        )
+    , Movq
+        ( AImm 4 )
+        ( AVar
+            ( x:0 )
+        )
+    , Addq
+        ( AVar
+            ( tmp:1 )
+        )
+        ( AVar
+            ( x:0 )
+        )
+    , Movq
+        ( AVar
+            ( x:0 )
+        ) ( AReg Rax )
+    ]

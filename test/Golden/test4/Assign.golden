@@ -1,1 +1,7 @@
-Program 48 [Movq $-3 8(%Rbp),Movq $4 16(%Rbp),Addq 8(%Rbp) 16(%Rbp),Movq 16(%Rbp) 24(%Rbp),Movq 24(%Rbp) %Rax]
+Program 48
+    [ Movq $-3 8( %Rbp )
+    , Movq $4 16( %Rbp )
+    , Addq 8( %Rbp ) 16( %Rbp )
+    , Movq 16( %Rbp ) 24( %Rbp )
+    , Movq 24( %Rbp ) %Rax
+    ]

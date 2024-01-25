@@ -1,1 +1,2 @@
-Program (EInt 4)
+Program
+    { body = EInt 4 }

@@ -1,1 +1,10 @@
-Program (ELet "x" (EAdd (EInt 4) (ESub (EInt 5))) (EIdent "x"))
+Program
+    { body = ELet "x"
+        ( EAdd
+            ( EInt 4 )
+            ( ESub
+                ( EInt 5 )
+            )
+        )
+        ( EIdent "x" )
+    }

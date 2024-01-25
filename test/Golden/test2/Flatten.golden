@@ -1,2 +1,9 @@
 Program
-  [ "x0" ] [ SAssign "x0" (EArg (AInt 5)) , SReturn (AVar "x0") ]
+    { seed = Seed 1
+    , body =
+        [
+            ( x:0 ) := 5
+        ]
+    , result =
+        ( x:0 )
+    }

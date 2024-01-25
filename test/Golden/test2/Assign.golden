@@ -1,1 +1,4 @@
-Program 32 [Movq $5 8(%Rbp),Movq 8(%Rbp) %Rax]
+Program 32
+    [ Movq $5 8( %Rbp )
+    , Movq 8( %Rbp ) %Rax
+    ]

@@ -1,1 +1,2 @@
-Program 16 [ (Movq $ 4) % Rax ]
+Program 16
+    [ Movq $4 %Rax ]

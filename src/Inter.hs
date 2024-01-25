@@ -1,27 +1,32 @@
 module Inter (run) where
 
 import Data.Map as Map
-import Data.Function
+import Data.Function ((&))
 import Data.Maybe (fromMaybe)
 
 import Ident (Ident)
 
 import R1 ( Program(..), Expr(..))
 
-run :: [Int] -> Program -> Int
-run input (Program expr) = runExpr input Map.empty expr
+run :: Program -> IO Int
+run (Program expr _) = runExpr Map.empty expr
 
-runExpr :: [Int] -> Map Ident Int -> Expr -> Int
-runExpr _ _ (EInt n) = n
-runExpr (hd : _) _ ERead = hd
-runExpr [] _ ERead = error "Not enough input for read"
-runExpr i d (EAdd left right) =
-    let left' = runExpr i d left
-        right' = runExpr i d right
-    in left' + right'
-runExpr i d (ESub expr) = - (runExpr i d expr)
-runExpr i d (ELet name value body) =
-    let value' = runExpr i d value
-        d' = Map.insert name value' d
-    in runExpr i d' body
-runExpr _ d (EIdent name) = Map.lookup name d & fromMaybe (error "not found")
+runExpr :: Map Ident Int -> Expr -> IO Int
+runExpr _ (EInt n) = return n
+runExpr _ ERead = do read <$> getLine
+runExpr d (EAdd left right) = do
+    left' <- runExpr d left
+    right' <- runExpr d right
+
+    return $ left' + right'
+runExpr d (ESub expr) =  negate <$> runExpr d expr
+runExpr d (ELet name value body) = do -- TODO use NoFieldSelectors
+    value' <- runExpr d value
+    let d' = Map.insert name value' d
+
+    runExpr d' body
+runExpr d (EIdent name) =
+    Map.lookup name d
+    & fromMaybe (error "not found")
+    & return
+

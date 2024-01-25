@@ -1,8 +1,32 @@
 Program
-  [ "t0" , "x0" , "y0" ]
-  [ Movq (AImm (-3)) (AVar "t0")
-  , Movq (AImm 4) (AVar "y0")
-  , Addq (AVar "t0") (AVar "y0")
-  , Movq (AVar "y0") (AVar "x0")
-  , Movq (AVar "x0") (AReg Rax)
-  ]
+    [ Movq
+        ( AImm
+            ( -3 )
+        )
+        ( AVar
+            ( tmp:2 )
+        )
+    , Movq
+        ( AImm 4 )
+        ( AVar
+            ( y:1 )
+        )
+    , Addq
+        ( AVar
+            ( tmp:2 )
+        )
+        ( AVar
+            ( y:1 )
+        )
+    , Movq
+        ( AVar
+            ( y:1 )
+        )
+        ( AVar
+            ( x:0 )
+        )
+    , Movq
+        ( AVar
+            ( x:0 )
+        ) ( AReg Rax )
+    ]

@@ -1,5 +1,20 @@
 Program
-  (ELet
-     "x0"
-     (ELet "y0" (EAdd (EInt 4) (ESub (EInt 3))) (EIdent "y0"))
-     (EIdent "x0"))
+    { body = ELet
+        ( x:0 )
+        ( ELet
+            ( y:1 )
+            ( EAdd
+                ( EInt 4 )
+                ( ESub
+                    ( EInt 3 )
+                )
+            )
+            ( EIdent
+                ( y:1 )
+            )
+        )
+        ( EIdent
+            ( x:0 )
+        )
+    , seed = Seed 2
+    }

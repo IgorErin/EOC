@@ -26,4 +26,4 @@ data Instr =
     | Jmp Label
     deriving (Show, Eq)
 
-data Program = Program [Ident] [Instr] deriving (Show, Eq)
+data Program = Program [Instr] deriving (Show, Eq)

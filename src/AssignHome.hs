@@ -29,7 +29,7 @@ initCtx = Ctx {
 $(makeLenses ''Ctx)
 
 run :: XV.Program -> X.Program
-run (XV.Program _ insts) =
+run (XV.Program insts) = 
     let s = mapM runInstr insts
         (insts', ctx) = runState s initCtx
         sSize = F.getSize $ view frame ctx

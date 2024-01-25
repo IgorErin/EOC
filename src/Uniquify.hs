@@ -2,67 +2,58 @@
 
 module Uniquify (run) where
 
-import R1 as R ( Expr(..), Program(..) )
+import qualified ParseTree as PT
+import qualified R1 as R
 
-import Ident (Ident, newIdent)
+import Control.Monad.State
 
-import Data.Map as Map (empty, insert, lookup, Map)
-import Data.Maybe (fromMaybe)
+import Control.Lens ( view, over, makeLenses)
+import Control.Lens.Zoom (zoom)
 
-import Control.Monad.State (gets, modify, evalState, State)
-import Control.Lens ((&), set, makeLenses)
+import Data.Map (Map)
+import qualified Data.Map as Map (insert, lookup, empty)
+import Data.Maybe as Maybe (fromMaybe)
 
-data Names = Names { _old_names:: [Ident], _names_map:: Map Ident Ident }
+import Fmt
 
-$(makeLenses ''Names)
+import qualified Ident (Seed, Ident, newTempWithText, initSeed)
 
-initNames :: Names
-initNames = Names { _old_names = [], _names_map = Map.empty }
+data Ctx = Ctx {
+    _nmap :: Map PT.Ident Ident.Ident,
+    _seed :: Ident.Seed
+}
 
-newName :: [Ident] -> Ident -> Ident
-newName e current =
-    let newNameWith :: Int -> Ident -> Ident
-        newNameWith count name =
-            let numbered = newIdent count name in
-            if numbered `elem` e
-            then newNameWith (count + 1) name
-            else numbered
-    in newNameWith 0 current
+initCtx :: Ctx
+initCtx = Ctx { _nmap = Map.empty, _seed = Ident.initSeed}
 
-runExpr' :: Expr -> State Names  Expr
-runExpr' n@(EInt _) = do return n
-runExpr' ERead = do return ERead
-runExpr' (ESub expr) = do
-    expr' <- runExpr' expr
+$(makeLenses ''Ctx)
 
-    return $ ESub expr'
-runExpr' (EAdd left right) = do
-    left_ <- runExpr' left
-    right_ <- runExpr' right
+run :: PT.Program -> R.Program
+run (PT.Program body) =
+    let (expr, ctx) = runState (runExpr body) initCtx
+    in R.program expr (view seed ctx)
 
-    return $ EAdd left_ right_
-runExpr' (ELet name expr body) = do
-    nmap <- gets _names_map
-    old <- gets _old_names
+runExpr :: PT.Expr -> State Ctx R.Expr
+runExpr (PT.EInt n)    = return $ R.EInt n
+runExpr PT.ERead       = return   R.ERead
+runExpr (PT.ESub e)    = do
+    e' <- runExpr e
 
-    let name' = newName old name
-    let map' = Map.insert name name' nmap
-    let old' = name': name : old
+    return $ R.ESub e'
+runExpr (PT.EAdd l r) = do
+    l' <- runExpr l
+    r' <- runExpr r
 
-    modify $ set old_names old'
-    expr' <- runExpr' expr
+    return $ R.EAdd l' r'
+runExpr (PT.ELet name e body) = do
+    name' <- zoom seed $ Ident.newTempWithText name
+    modify $ over nmap $ Map.insert name name'
 
-    modify $ set names_map map'
-    body' <- runExpr' body
+    e' <- runExpr e
+    body' <- runExpr body
 
-    return (ELet name' expr' body')
-runExpr' (EIdent name) = do
-    nmap <- gets _names_map
+    return $ R.ELet name' e' body'
+runExpr (PT.EIdent name) = do
+    name' <- gets (Maybe.fromMaybe (error $ "name: "+|name|+" not found") . Map.lookup name . view nmap)
 
-    let name' = Map.lookup name nmap
-                & fromMaybe (error "name not found")
-
-    return $ EIdent name'
-
-run :: Program -> Program
-run (Program expr) = Program $ evalState (runExpr' expr) initNames
+    return $ R.EIdent name'

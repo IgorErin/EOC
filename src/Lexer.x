@@ -2,11 +2,10 @@
 module Lexer(alexScanTokens, Token (..)) where
 
 import Data.Text (Text)
-import qualified Data.Text.Lazy.Encoding as TL
+import qualified Data.Text.Lazy.Encoding as TL ()
 
 import Data.ByteString            as B
 import Data.ByteString.Lazy       as BL
-import Data.Text                  as T
 import Data.Text.Encoding         as T
 import Data.ByteString.Lazy.Char8 as BSC
 

@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module ISelect (run) where
 
 import qualified C0 as C
@@ -6,16 +8,14 @@ import X86V
 import Ident (Ident)
 import Regs
 
-import Control.Monad.Writer
-    ( MonadWriter(tell), execWriter, Writer )
+import Control.Monad.Writer (MonadWriter(tell), execWriter, Writer )
 
 run :: C.Program -> X86V.Program
-run (C.Program names body result) =
+run (C.Program { C.body, C.result }) =
     let body' = execWriter $ do
             mapM_ runStmt body
             runReturn result
-
-    in X86V.Program names body'
+    in X86V.Program body'
 
 runReturn :: C.Arg -> Writer [X86V.Instr] ()
 runReturn (C.AVar ident) =

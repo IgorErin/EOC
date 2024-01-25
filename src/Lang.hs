@@ -1,8 +1,9 @@
 module Lang
-    (lexing,
+    (initState,
+
+    lexing,
     parsing,
-    partial,
-    run,
+    -- run, TODO add interpreter for property based tests
     unique,
     flatten,
     select,
@@ -10,13 +11,13 @@ module Lang
     toString)
     where
 
+import qualified ParseTree as PT
 import qualified R1 as R
 import qualified C0 as C
 import qualified X86V
 import qualified X86
 
 import qualified Parser as P
-import qualified Pareval as PE
 import qualified Lexer as L
 import qualified Inter as I
 import qualified Uniquify as U
@@ -25,20 +26,19 @@ import qualified ISelect as IS
 import qualified AssignHome as AH
 import qualified Print as Pr
 
+import qualified Ident(Seed, initSeed)
+
 import Data.ByteString.Lazy (ByteString)
 import Data.Text.Lazy (Text)
+
+initState :: Ident.Seed
+initState = Ident.initSeed
 
 lexing :: ByteString -> [L.Token]
 lexing = L.alexScanTokens
 
-parsing :: ByteString -> R.Program
+parsing :: ByteString -> PT.Program
 parsing = P.run . lexing
-
-partial :: ByteString -> R.Program
-partial = PE.run . parsing
-
-run :: [Int] -> ByteString -> Int
-run args = I.run args . parsing
 
 unique :: ByteString -> R.Program
 unique = U.run . parsing

@@ -1,1 +1,9 @@
-Program (ELet "x0" (EInt 5) (EIdent "x0"))
+Program
+    { body = ELet
+        ( x:0 )
+        ( EInt 5 )
+        ( EIdent
+            ( x:0 )
+        )
+    , seed = Seed 1
+    }

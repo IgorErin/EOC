@@ -1,21 +1,18 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
-module R1
-    (Program(..), Expr(..),
+module ParseTree (
+    Program(..), Expr(..), Ident,
     program,
     int, read, sub, read_, add,
-    ident, let_)
-    where
+    ident, let_
+    ) where
 
-import Ident (Ident, Seed)
+import Data.Text (Text)
 
-data Program = Program {
-        body :: Expr,
-        seed :: Ident.Seed
-    } deriving (Show, Eq)
+type Ident = Text
 
-program :: Expr -> Seed -> Program
-program body seed = Program { body , seed }
+newtype Program = Program { body :: Expr } deriving (Show, Eq)
+
+program :: Expr -> Program
+program e = Program { body = e }
 
 data Expr =
     EInt Int
@@ -24,7 +21,7 @@ data Expr =
     | EAdd Expr Expr
     | ELet Ident Expr Expr
     | EIdent Ident
-    deriving (Eq, Show)
+    deriving (Show, Eq)
 
 ident :: Ident -> Expr
 ident = EIdent

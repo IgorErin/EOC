@@ -1,3 +1,11 @@
 Program
-  [ "x0" ]
-  [ Movq (AImm 5) (AVar "x0") , Movq (AVar "x0") (AReg Rax) ]
+    [ Movq
+        ( AImm 5 )
+        ( AVar
+            ( x:0 )
+        )
+    , Movq
+        ( AVar
+            ( x:0 )
+        ) ( AReg Rax )
+    ]

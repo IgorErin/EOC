@@ -1,1 +1,4 @@
-Program (EInt 4)
+Program
+    { body = EInt 4
+    , seed = Seed 0
+    }

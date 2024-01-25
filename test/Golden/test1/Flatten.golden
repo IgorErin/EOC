@@ -1,1 +1,5 @@
-Program [] [ SReturn (AInt 4) ]
+Program
+    { seed = Seed 0
+    , body = []
+    , result = 4
+    }

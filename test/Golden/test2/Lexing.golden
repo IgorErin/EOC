@@ -1,1 +1,7 @@
-[ TLet , TIdent "x" , TBind , TInt 5 , TIn , TIdent "x" ]
+[ TLet
+, TIdent "x"
+, TBind
+, TInt 5
+, TIn
+, TIdent "x"
+]

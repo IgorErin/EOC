@@ -1,7 +1,19 @@
 Program
-  [ "t0" , "x0" , "y0" ]
-  [ SAssign "t0" (ESub (AInt 3))
-  , SAssign "y0" (EAdd (AInt 4) (AVar "t0"))
-  , SAssign "x0" (EArg (AVar "y0"))
-  , SReturn (AVar "x0")
-  ]
+    { seed = Seed 3
+    , body =
+        [
+            ( tmp:2 ) :=
+            ( -3 )
+        ,
+            ( y:1 ) :=
+            ( +4
+            ,
+                ( tmp:2 )
+            )
+        ,
+            ( x:0 ) :=
+            ( y:1 )
+        ]
+    , result =
+        ( x:0 )
+    }

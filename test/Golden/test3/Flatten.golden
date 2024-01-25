@@ -1,6 +1,16 @@
 Program
-  [ "t0" , "x0" ]
-  [ SAssign "t0" (ESub (AInt 5))
-  , SAssign "x0" (EAdd (AInt 4) (AVar "t0"))
-  , SReturn (AVar "x0")
-  ]
+    { seed = Seed 2
+    , body =
+        [
+            ( tmp:1 ) :=
+            ( -5 )
+        ,
+            ( x:0 ) :=
+            ( +4
+            ,
+                ( tmp:1 )
+            )
+        ]
+    , result =
+        ( x:0 )
+    }
