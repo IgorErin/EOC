@@ -9,9 +9,11 @@ import Control.Lens
 ---------------
 -- (-8)     | retrun adress
 -- (0)      | rbp
+-- start of stack allocated manually
 -- (8)      | fst arg
 -- ...      | ...
 -- (8 * i)  | ith arg
+-- end of manually allocatate stack
 
 newtype Frame = Frame { _fsize :: Int }
 
@@ -20,18 +22,16 @@ $(makeLenses ''Frame)
 qword :: Int
 qword = 8
 
-initOffset :: Int
-initOffset = qword
-
 empty :: Frame
-empty = Frame { _fsize = initOffset }
+empty = Frame { _fsize = 0 }
 
 nextOffset :: State Frame Int
 nextOffset = do
     current <- gets $ view fsize
     modify $ over fsize (+ qword)
 
-    return current
+    -- since count start before push rbp
+    return $ current + 8
 
 ------------- Alignment ----------------------
 

@@ -1,0 +1,8 @@
+Program
+    { body = ELet "x"
+        ( EAdd
+            ( EInt 1000000 )
+            ( EInt 1000000 )
+        )
+        ( EIdent "x" )
+    }

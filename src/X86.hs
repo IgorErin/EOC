@@ -18,7 +18,6 @@ instance Show Arg where
     show (AReg reg) = "%"+||reg||+""
     show (ADeref off reg) = ""+||off||+"(%"+||reg||+")"
 
-
 data Instr =
     Addq Arg Arg
     | Subq Arg Arg

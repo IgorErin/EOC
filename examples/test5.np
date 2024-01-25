@@ -1,0 +1,5 @@
+let x =
+    let x =
+        let x = 1 in x
+    in (+ 1 x)
+in (+ 1 x)

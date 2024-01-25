@@ -1,0 +1,25 @@
+[ TLet
+, TIdent "x"
+, TBind
+, TLet
+, TIdent "x"
+, TBind
+, TLet
+, TIdent "x"
+, TBind
+, TInt 1
+, TIn
+, TIdent "x"
+, TIn
+, TLParent
+, TAdd
+, TInt 1
+, TIdent "x"
+, TRParent
+, TIn
+, TLParent
+, TAdd
+, TInt 1
+, TIdent "x"
+, TRParent
+]

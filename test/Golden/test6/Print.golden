@@ -2,7 +2,10 @@
 main:
     pushq %Rbp
     subq $16, %Rsp
-    movq $5, 8(%Rbp)
+    movq $1000000, %Rax
+    movq %Rax, 8(%Rbp)
+    movq $1000000, %Rax
+    addq %Rax, 8(%Rbp)
     movq 8(%Rbp), %Rax
     addq $16, %Rsp
     popq %Rbp

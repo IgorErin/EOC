@@ -1,3 +1,7 @@
     .global main
 main:
+    pushq %Rbp
+    subq $16, %Rsp
     movq $4, %Rax
+    addq $16, %Rsp
+    popq %Rbp

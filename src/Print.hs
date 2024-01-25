@@ -7,12 +7,9 @@ import Data.Text.Lazy (Text)
 
 run :: Program -> Text
 run (Program _ instr) =
-    let instr' = instr -- TODO prelude
-        body = mconcat $ map textInstrWithOffset instr'
+    let body = mconcat $ map textInstrWithOffset instr
         header = "    .global main\nmain:\n"
     in pretty $ header <> body
-
--- TODO move to appropriate place
 
 textInstrWithOffset :: Instr -> Builder
 textInstrWithOffset x = "    "+|textInstr x|+""

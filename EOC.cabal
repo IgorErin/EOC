@@ -37,8 +37,10 @@ library
       Lang
       Lexer
       Lib
+      MemPatch
       Parser
       ParseTree
+      PreludeConclude
       Print
       R1
       Regs

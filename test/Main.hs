@@ -12,22 +12,17 @@ import Data.Text.Lazy.Encoding as TLE (encodeUtf8)
 import Text.Pretty.Simple (pShowNoColor )
 
 import qualified Lang as L
--- import qualified Unit.Inter as Inter (tests)
 
 tests :: IO TestTree
 tests = testGroup "Main" <$> sequence [
-  -- Golden tests
   goldenShow L.lexing "Lexing",
   goldenShow L.parsing "Parsing",
   goldenShow L.unique "Unique",
   goldenShow L.flatten "Flatten",
   goldenShow L.select "Select",
-  goldenShow L.assign "Assign",
-  goldenText L.toString "Print"
-
-  -- Unit Tests
-  -- pure Inter.tests
-  ]
+  goldenText L.assign "Assign",
+  goldenText L.mempatch "Mempatch",
+  goldenText L.finale "Print" ]
 
 main :: IO ()
 main = defaultMain =<< tests

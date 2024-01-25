@@ -1,0 +1,27 @@
+Program
+    { body = ELet
+        ( x:0 )
+        ( ELet
+            ( x:1 )
+            ( ELet
+                ( x:2 )
+                ( EInt 1 )
+                ( EIdent
+                    ( x:2 )
+                )
+            )
+            ( EAdd
+                ( EInt 1 )
+                ( EIdent
+                    ( x:2 )
+                )
+            )
+        )
+        ( EAdd
+            ( EInt 1 )
+            ( EIdent
+                ( x:2 )
+            )
+        )
+    , seed = Seed 3
+    }

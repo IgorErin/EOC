@@ -8,7 +8,8 @@ module Lang
     flatten,
     select,
     assign,
-    toString)
+    mempatch,
+    finale)
     where
 
 import qualified ParseTree as PT
@@ -19,11 +20,12 @@ import qualified X86
 
 import qualified Parser as P
 import qualified Lexer as L
-import qualified Inter as I
 import qualified Uniquify as U
 import qualified Flatten as F
 import qualified ISelect as IS
 import qualified AssignHome as AH
+import qualified MemPatch as MP
+import qualified PreludeConclude as PC
 import qualified Print as Pr
 
 import qualified Ident(Seed, initSeed)
@@ -49,8 +51,23 @@ flatten = F.run . unique
 select :: ByteString -> X86V.Program
 select = IS.run . flatten
 
-assign :: ByteString -> X86.Program
-assign = AH.run . select
+----------- Assign ---------------
 
-toString :: ByteString -> Text
-toString = Pr.run . assign
+assign' :: ByteString -> X86.Program
+assign' = AH.run . select
+
+assign :: ByteString -> Text
+assign = Pr.run . assign'
+
+----------- Patch ---------------
+
+mempatch' :: ByteString -> X86.Program
+mempatch' = MP.run . assign'
+
+mempatch :: ByteString -> Text
+mempatch = Pr.run . mempatch'
+
+----------- Finale ---------------
+
+finale :: ByteString -> Text
+finale = Pr.run . PC.run .mempatch'

@@ -1,0 +1,42 @@
+Program
+    [ Movq
+        ( AImm 1 )
+        ( AVar
+            ( x:2 )
+        )
+    , Movq
+        ( AVar
+            ( x:2 )
+        )
+        ( AVar
+            ( x:1 )
+        )
+    , Movq
+        ( AImm 1 )
+        ( AVar
+            ( x:0 )
+        )
+    , Addq
+        ( AVar
+            ( x:2 )
+        )
+        ( AVar
+            ( x:0 )
+        )
+    , Movq
+        ( AImm 1 )
+        ( AVar
+            ( tmp:3 )
+        )
+    , Addq
+        ( AVar
+            ( x:2 )
+        )
+        ( AVar
+            ( tmp:3 )
+        )
+    , Movq
+        ( AVar
+            ( tmp:3 )
+        ) ( AReg Rax )
+    ]

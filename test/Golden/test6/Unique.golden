@@ -1,0 +1,12 @@
+Program
+    { body = ELet
+        ( x:0 )
+        ( EAdd
+            ( EInt 1000000 )
+            ( EInt 1000000 )
+        )
+        ( EIdent
+            ( x:0 )
+        )
+    , seed = Seed 1
+    }
