@@ -1,5 +1,5 @@
     .global main
 main:
-    movq $1000000, 8(%Rbp)
-    addq $1000000, 8(%Rbp)
-    movq 8(%Rbp), %Rax
+    movq $1000000, 8(%rbp)
+    addq $1000000, 8(%rbp)
+    movq 8(%rbp), %rax

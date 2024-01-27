@@ -1,6 +1,6 @@
     .global main
 main:
-    movq $-5, 8(%Rbp)
-    movq $4, 16(%Rbp)
-    addq 8(%Rbp), 16(%Rbp)
-    movq 16(%Rbp), %Rax
+    movq $-5, 8(%rbp)
+    movq $4, 16(%rbp)
+    addq 8(%rbp), 16(%rbp)
+    movq 16(%rbp), %rax

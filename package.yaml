@@ -87,3 +87,7 @@ tests:
     - pretty-simple
     - text
     - mtl
+    - directory
+    - typed-process
+    - unliftio
+    - fmt

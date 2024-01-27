@@ -1,11 +1,12 @@
     .global main
 main:
-    pushq %Rbp
-    subq $16, %Rsp
-    movq $1000000, %Rax
-    movq %Rax, 8(%Rbp)
-    movq $1000000, %Rax
-    addq %Rax, 8(%Rbp)
-    movq 8(%Rbp), %Rax
-    addq $16, %Rsp
-    popq %Rbp
+    pushq %rbp
+    subq $16, %rsp
+    movq $1000000, %rax
+    movq %rax, 8(%rbp)
+    movq $1000000, %rax
+    addq %rax, 8(%rbp)
+    movq 8(%rbp), %rax
+    addq $16, %rsp
+    popq %rbp
+    retq 

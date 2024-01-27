@@ -41,12 +41,11 @@ alignConst = 16
 align :: Frame -> Frame
 align fr =
     let localAlign size =
-            foldr (\left acc ->
-                if left >= size then left else acc)
+            foldr (\left acc -> if left >= size then left else acc)
             (error "infinit finit")
-            $ 0 : iterate (+ alignConst) alignConst
+            $ iterate (+ alignConst) 0
     -- since return address we must add qword
-        alignSize = localAlign (view fsize fr + qword)
+        alignSize = localAlign $ view fsize fr
     in Frame { _fsize = alignSize }
 
 getSize :: Frame -> Int

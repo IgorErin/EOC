@@ -1,4 +1,4 @@
 Program
     [ Movq
-        ( AImm 4 ) ( AReg Rax )
+        ( AImm 4 ) ( AReg rax )
     ]

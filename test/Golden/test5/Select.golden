@@ -38,5 +38,5 @@ Program
     , Movq
         ( AVar
             ( tmp:3 )
-        ) ( AReg Rax )
+        ) ( AReg rax )
     ]

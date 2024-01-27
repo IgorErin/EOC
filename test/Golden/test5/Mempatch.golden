@@ -1,12 +1,12 @@
     .global main
 main:
-    movq $1, 8(%Rbp)
-    movq 8(%Rbp), %Rax
-    movq %Rax, 16(%Rbp)
-    movq $1, 24(%Rbp)
-    movq 8(%Rbp), %Rax
-    addq %Rax, 24(%Rbp)
-    movq $1, 32(%Rbp)
-    movq 8(%Rbp), %Rax
-    addq %Rax, 32(%Rbp)
-    movq 32(%Rbp), %Rax
+    movq $1, 8(%rbp)
+    movq 8(%rbp), %rax
+    movq %rax, 16(%rbp)
+    movq $1, 24(%rbp)
+    movq 8(%rbp), %rax
+    addq %rax, 24(%rbp)
+    movq $1, 32(%rbp)
+    movq 8(%rbp), %rax
+    addq %rax, 32(%rbp)
+    movq 32(%rbp), %rax

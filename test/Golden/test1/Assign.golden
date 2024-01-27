@@ -1,3 +1,3 @@
     .global main
 main:
-    movq $4, %Rax
+    movq $4, %rax

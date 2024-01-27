@@ -7,5 +7,5 @@ Program
     , Movq
         ( AVar
             ( x:0 )
-        ) ( AReg Rax )
+        ) ( AReg rax )
     ]

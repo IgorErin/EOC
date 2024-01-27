@@ -1,11 +1,12 @@
     .global main
 main:
-    pushq %Rbp
-    subq $32, %Rsp
-    movq $-5, 8(%Rbp)
-    movq $4, 16(%Rbp)
-    movq 8(%Rbp), %Rax
-    addq %Rax, 16(%Rbp)
-    movq 16(%Rbp), %Rax
-    addq $32, %Rsp
-    popq %Rbp
+    pushq %rbp
+    subq $16, %rsp
+    movq $-5, 8(%rbp)
+    movq $4, 16(%rbp)
+    movq 8(%rbp), %rax
+    addq %rax, 16(%rbp)
+    movq 16(%rbp), %rax
+    addq $16, %rsp
+    popq %rbp
+    retq 

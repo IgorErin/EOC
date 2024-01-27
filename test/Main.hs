@@ -35,7 +35,7 @@ goldenShow testFun =
 goldenText :: (BL.ByteString -> Text) -> String -> IO TestTree
 goldenText testFun = golden (TLE.encodeUtf8 . testFun)
 
-golden :: (BL.ByteString -> BL.ByteString) -> String -> IO TestTree
+golden :: (BL.ByteString -> BL.ByteString) -> String -> IO TestTree -- TODO new line in files
 golden testFun name = do
   srcFiles <- findByExtension [".np"] "examples"
   return $ testGroup ("Golden " ++ name)

@@ -87,6 +87,7 @@ test-suite EOC-test
   type: exitcode-stdio-1.0
   main-is: Main.hs
   other-modules:
+      Cram.File
       Unit.Inter
       Paths_EOC
   autogen-modules:
@@ -98,11 +99,15 @@ test-suite EOC-test
       EOC
     , base >=4.7 && <5
     , bytestring
+    , directory
     , filepath
+    , fmt
     , mtl
     , pretty-simple
     , tasty
     , tasty-golden
     , tasty-hunit
     , text
+    , typed-process
+    , unliftio
   default-language: Haskell2010
