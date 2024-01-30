@@ -1,6 +1,0 @@
-    .global main
-main:
-    pushq %rbp
-    movq $4, %rax
-    popq %rbp
-    retq 

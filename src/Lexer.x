@@ -1,4 +1,6 @@
 {
+{-# LANGUAGE FieldSelectors #-}
+
 module Lexer(alexScanTokens, Token (..)) where
 
 import Data.Text (Text)
