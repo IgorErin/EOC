@@ -8,6 +8,7 @@ prelude size
     | size == 0 = [Pushq $ AReg Rbp]
     | otherwise =
         [ Pushq $ AReg Rbp,
+          Movq (AReg Rsp) $ AReg Rbp,
           Subq (AImm size) $ AReg Rsp ]
 
 conclusion :: Int -> [Instr]

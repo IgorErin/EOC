@@ -1,3 +1,2 @@
-    .global main
-main:
-    movq $4, %rax
+Program 0
+    [ Movq $4 %rax ]

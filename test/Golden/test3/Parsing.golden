@@ -1,7 +1,7 @@
 Program
     { body = ELet "x"
         ( EAdd
-            ( EInt 4 )
+            ( EInt 6 )
             ( ESub
                 ( EInt 5 )
             )

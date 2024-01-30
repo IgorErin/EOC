@@ -18,7 +18,7 @@ Program
         )
     , Addq
         ( AVar
-            ( x:2 )
+            ( x:1 )
         )
         ( AVar
             ( x:0 )
@@ -30,7 +30,7 @@ Program
         )
     , Addq
         ( AVar
-            ( x:2 )
+            ( x:0 )
         )
         ( AVar
             ( tmp:3 )

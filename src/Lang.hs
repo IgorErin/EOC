@@ -56,16 +56,16 @@ select = IS.run . flatten
 assign' :: ByteString -> X86.Program
 assign' = AH.run . select
 
-assign :: ByteString -> Text
-assign = Pr.run . assign'
+assign :: ByteString -> X86.Program
+assign = assign'
 
 ----------- Patch ---------------
 
 mempatch' :: ByteString -> X86.Program
 mempatch' = MP.run . assign'
 
-mempatch :: ByteString -> Text
-mempatch = Pr.run . mempatch'
+mempatch :: ByteString -> X86.Program
+mempatch = mempatch'
 
 ----------- Finale ---------------
 

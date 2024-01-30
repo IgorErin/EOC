@@ -14,10 +14,11 @@ tests = testGroup "Main" <$> sequence [
   G.show_ L.flatten "Flatten",
   G.show_ L.select "Select",
 
-  G.text_ L.assign "Assign",
-  G.text_ L.mempatch "Mempatch",
+  G.show_ L.assign "Assign",
+  G.show_ L.mempatch "Mempatch",
 
-  G.textAsm L.finale "Asm" ]
+  G.textAsm L.finale "Asm",
+  G.fromFileShow R.checkCode "Run" ]
 
 main :: IO ()
 main = defaultMain =<< tests

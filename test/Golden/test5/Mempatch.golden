@@ -1,12 +1,12 @@
-    .global main
-main:
-    movq $1, 8(%rbp)
-    movq 8(%rbp), %rax
-    movq %rax, 16(%rbp)
-    movq $1, 24(%rbp)
-    movq 8(%rbp), %rax
-    addq %rax, 24(%rbp)
-    movq $1, 32(%rbp)
-    movq 8(%rbp), %rax
-    addq %rax, 32(%rbp)
-    movq 32(%rbp), %rax
+Program 32
+    [ Movq $1 -8( %rbp )
+    , Movq -8( %rbp ) %rax
+    , Movq %rax -16( %rbp )
+    , Movq $1 -24( %rbp )
+    , Movq -16( %rbp ) %rax
+    , Addq %rax -24( %rbp )
+    , Movq $1 -32( %rbp )
+    , Movq -24( %rbp ) %rax
+    , Addq %rax -32( %rbp )
+    , Movq -32( %rbp ) %rax
+    ]

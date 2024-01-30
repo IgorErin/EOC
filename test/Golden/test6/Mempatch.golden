@@ -1,7 +1,7 @@
-    .global main
-main:
-    movq $1000000, %rax
-    movq %rax, 8(%rbp)
-    movq $1000000, %rax
-    addq %rax, 8(%rbp)
-    movq 8(%rbp), %rax
+Program 16
+    [ Movq $1000000 %rax
+    , Movq %rax -8( %rbp )
+    , Movq $1000000 %rax
+    , Addq %rax -8( %rbp )
+    , Movq -8( %rbp ) %rax
+    ]

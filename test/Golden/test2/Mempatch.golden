@@ -1,4 +1,4 @@
-    .global main
-main:
-    movq $5, 8(%rbp)
-    movq 8(%rbp), %rax
+Program 16
+    [ Movq $5 -8( %rbp )
+    , Movq -8( %rbp ) %rax
+    ]

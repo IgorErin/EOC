@@ -47,13 +47,15 @@ runExpr (PT.EAdd l r) = do
     return $ R.EAdd l' r'
 runExpr (PT.ELet name e body) = do
     name' <- zoom seed $ Ident.newTempWithText name
-    modify $ over nmap $ Map.insert name name'
 
     e' <- runExpr e
-    body' <- runExpr body
+    body' <- withState (over nmap $ Map.insert name name') $ runExpr body
 
     return $ R.ELet name' e' body'
 runExpr (PT.EIdent name) = do
-    name' <- gets (Maybe.fromMaybe (error $ "name: "+|name|+" not found") . Map.lookup name . view nmap)
+    name' <- gets (
+        Maybe.fromMaybe (error $ "name: "+|name|+" not found")
+        . Map.lookup name
+        . view nmap)
 
     return $ R.EIdent name'

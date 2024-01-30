@@ -1,7 +1,7 @@
-    .global main
-main:
-    movq $-3, 8(%rbp)
-    movq $4, 16(%rbp)
-    addq 8(%rbp), 16(%rbp)
-    movq 16(%rbp), 24(%rbp)
-    movq 24(%rbp), %rax
+Program 32
+    [ Movq $-3 -8( %rbp )
+    , Movq $4 -16( %rbp )
+    , Addq -8( %rbp ) -16( %rbp )
+    , Movq -16( %rbp ) -24( %rbp )
+    , Movq -24( %rbp ) %rax
+    ]

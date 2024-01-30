@@ -7,7 +7,7 @@ Program
             ( tmp:1 )
         )
     , Movq
-        ( AImm 4 )
+        ( AImm 6 )
         ( AVar
             ( x:0 )
         )

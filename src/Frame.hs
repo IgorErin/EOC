@@ -31,7 +31,7 @@ nextOffset = do
     modify $ over fsize (+ qword)
 
     -- since count start before push rbp
-    return $ current + 8
+    return $ - (current + qword)
 
 ------------- Alignment ----------------------
 

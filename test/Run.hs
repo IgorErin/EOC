@@ -13,6 +13,11 @@ import Control.Monad.Cont (ContT (..))
 import Lang (finale)
 import UnliftIO (withTempFile, withTempDirectory, MonadIO (liftIO), Handle)
 
+-- runFile :: FilePath -> IO ()
+-- runFile fpath =
+
+--     undefined
+
 checkCode :: FilePath  -> IO ExitCode
 checkCode src = runContT (runDir src) return
 
@@ -22,37 +27,24 @@ runDir srcPath = do
 
     runFile dir srcPath
 
--- ingore handler
-withTempFile' :: FilePath -> String -> ContT r IO FilePath
-withTempFile' f s =
-    let base :: (FilePath -> Handle -> IO a) -> IO a
-        base = withTempFile f s
-
-        step :: (FilePath -> IO a) -> IO a
-        step k = base $ \fp _ -> k fp
-    in
-    ContT step
-
 runFile :: FilePath -> FilePath -> ContT ExitCode IO ExitCode
 runFile tempDir srcPath = do
-    let getTempFile = withTempFile' tempDir
+    let exec = dest tempDir
 
-    exec <- getTempFile "exec."
-    liftIO $ gccFileTo srcPath exec
-
+    liftIO $ gccFileTo exec srcPath
     liftIO $ run exec
 
+dest :: FilePath -> FilePath
+dest dir = dir </> "a.out"
+
 runtimePath :: FilePath
-runtimePath = "runtime" </> "runtime" <.> "c"
+runtimePath =  "." </> "runtime" </> "runtime" <.> "c"
 
 gccFileTo :: FilePath -> FilePath -> IO ()
-gccFileTo srcPath destPath = do
-    let output = "-o"+||destPath||+""
+gccFileTo tempDir srcPath  = do
+    let output = "-o" ++ tempDir
 
     runProcess_ $ proc "gcc" [srcPath, runtimePath, output]
 
 run :: FilePath -> IO ExitCode
 run = runProcess . flip proc []
-
--- asm      Golden/Print/testn.s
--- runtime  runtime/runtime.c
